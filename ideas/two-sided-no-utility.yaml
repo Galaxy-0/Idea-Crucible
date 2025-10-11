@@ -1,0 +1,13 @@
+intent: Marketplace connecting diners and local home cooks, with no standalone utility for either side without each other
+user: Urban young professionals and hobbyist home cooks
+scenario: Two-sided marketplace reliant on simultaneous dense supply and demand
+triggers: Belief that latent demand exists for home-cooked meals
+alts: Existing food delivery platforms
+assumptions:
+- Network effects will emerge quickly
+- Safety and compliance can be handled later
+risks:
+- Chicken-and-egg dynamics and no single-sided value
+- Regulatory and food safety hurdles
+- Distribution is hard without initial utility
+

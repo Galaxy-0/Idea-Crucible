@@ -13,8 +13,7 @@
   - `agent/schemas.py` — 数据模型：`Rule`, `Idea`, `Evidence`, `Verdict`
   - `agent/engine.py` — 规则匹配与仲裁（MVP）
 - `config/`
-  - `config/modes.yaml` — 模式：consulting | hybrid | logic-only
-  - `config/weights.yaml` — 严重级别权重与阈值
+- （已移除）`config/modes.yaml`、`config/weights.yaml`
   - `config/rules/core/*.yaml` — 红线规则（按类别）
 - `ideas/` — 示例想法（YAML）
 - `reports/` — 评估结果与报告
@@ -88,3 +87,24 @@
   - 安装 Node.js 并确保在 PATH 中
 - 运行：`python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
 - SDK 通过 Claude Code 流式交互，最终返回结构化 JSON 判定。
+
+## 评测基准（Agent 分诊）
+目的：验证 Agent 对“是否值得继续（go/caution/deny）”的判断与红线提示是否有参考性，支持回归与比较不同版本/模式。
+
+数据与格式：
+- 位置：`benchmarks/triage/pilot.jsonl`（每行一个样本）
+- 字段：`id`, `idea_path`, `gold_decision` ∈ {deny,caution,go}, 可选 `gold_redlines[]`, `notes`
+- Schema：`benchmarks/triage/schema.json`
+
+运行评测（离线 rules 模式）：
+- `./.venv/bin/python -m agent.main benchmark --data benchmarks/triage/pilot.jsonl --mode rules`
+- 输出：`reports/benchmarks/<slug>/summary.json` 与 `details.jsonl`
+
+指标与建议门槛：
+- 决策准确率 Accuracy：≥ 0.70（MVP），目标 ≥ 0.80
+- 关键类别召回（deny）：≥ 0.90（避免漏报高危）
+- 红线覆盖 Jaccard（宏平均）：≥ 0.60（MVP）
+- 置信度校准：开启 LLM 模式后补充 Brier/ECE（规则模式仅作参考）
+- 理由/下一步：抽样人工复核 10–20%
+
+注：当前中文样本可能因关键词匹配触发过度/不足，属已知限制。可逐步扩充中文关键词或引入更鲁棒的匹配策略。

@@ -5,7 +5,7 @@ condition: "Ethical/safety red flag beyond mitigation"
 severity: critical
 decision: deny
 rationale: "Systemic harm or abuse vectors that cannot be mitigated are unacceptable."
-keywords: ["harm", "abuse", "unsafe", "bias", "privacy violation"]
+keywords: ["harm", "abuse", "unsafe", "bias", "privacy violation", "偏见", "歧视", "伤害", "滥用", "隐私", "隐私泄露", "仇恨", "政策", "合规"]
 sources:
   - "Safety guidelines; platform AUPs"
 owner: core

@@ -13,8 +13,8 @@ Concise, testable scaffolding for evaluating startup ideas via a redline-first, 
   - `agent/schemas.py` — Pydantic models: `Rule`, `Idea`, `Evidence`, `Verdict`
   - `agent/engine.py` — rule matching + arbiter stub
 - `config/`
-  - `config/modes.yaml` — consulting | hybrid | logic-only
-  - `config/weights.yaml` — severity weights + thresholds
+- (removed) `config/modes.yaml` — legacy
+- (removed) `config/weights.yaml` — legacy
   - `config/rules/core/*.yaml` — redlines by category
 - `ideas/` — example idea YAML
 - `reports/` — generated verdicts
@@ -64,8 +64,7 @@ Optional (Claude Agent)
   - `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
 
 ## Files of Interest
-- `config/weights.yaml`: severity weights and decision thresholds
-- `config/modes.yaml`: mode presets that tune thresholds
+  (modes/weights removed; LLM-based evaluation only)
 - `config/rules/core/`: 10 redline rules (YAML)
 - `templates/report.md`: one-page report template
 - `ideas/demo-idea.yaml`: example input idea

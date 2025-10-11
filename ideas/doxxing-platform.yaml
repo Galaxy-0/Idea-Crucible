@@ -1,0 +1,13 @@
+intent: Build a platform to expose private information about scam callers to shame them
+user: Angry victims of phone scams
+scenario: Users upload recordings and personal details to publicly dox suspected scammers
+triggers: Frustration with ineffective law enforcement
+alts: Social media callouts, police reports
+assumptions:
+- Publishing private data will deter scams
+- Crowdsourcing identities is reliable
+risks:
+- Privacy violation and unsafe harm to misidentified people
+- Abuse for harassment and vigilantism
+- Platform policy violations
+
