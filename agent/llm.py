@@ -6,6 +6,10 @@ import time
 from typing import Any, Dict, List, Optional
 
 import yaml
+from dotenv import load_dotenv
+
+# Load environment variables from a local .env if present
+load_dotenv()
 
 
 class LLMConfig:
@@ -33,11 +37,13 @@ class OpenAIClient:
         except Exception as e:
             raise RuntimeError("openai package not installed. Add it to requirements and pip install.") from e
 
-        api_key = os.environ.get(cfg.api_key_env)
+        # Prefer generic envs from .env: LLM_API_KEY and LLM_API_URL
+        api_key = os.environ.get("LLM_API_KEY") or os.environ.get(cfg.api_key_env)
+        base_url = os.environ.get("LLM_API_URL")
         if not api_key:
             raise RuntimeError(f"Missing API key env: {cfg.api_key_env}")
 
-        self._client = OpenAI(api_key=api_key)
+        self._client = OpenAI(api_key=api_key, base_url=base_url) if base_url else OpenAI(api_key=api_key)
         self._cfg = cfg
 
     def complete_json(self, system: str, user: str) -> str:
@@ -128,4 +134,3 @@ def llm_verdict_json(idea: Dict[str, Any], rules: List[Dict[str, Any]], cfg: LLM
             "redlines": [],
             "next_steps": [],
         }
-

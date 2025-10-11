@@ -1,3 +1,4 @@
 # Core dependencies (for non-uv users). Optional LLM deps are extras via pyproject.toml
 pydantic>=2.6
 PyYAML>=6.0
+python-dotenv>=1.0.1

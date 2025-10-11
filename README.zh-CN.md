@@ -50,7 +50,11 @@
 - 创建虚拟环境：`uv venv`（或 `uv venv -p 3.11`）
 - 安装核心依赖：`uv sync`（默认仅安装核心依赖）
 - 启用 OpenAI 扩展：`uv sync --extra llm`
-- 设置密钥：`export OPENAI_API_KEY=...`
+- 环境变量：
+  - 复制 `.env.example` 为 `.env` 并填写：
+    - `LLM_API_URL`（如 https://api.openai.com/v1）
+    - `LLM_API_KEY`（你的 API Key）
+  - 或直接在 shell 中设置 `OPENAI_API_KEY`
 - 运行：`uv run python -m agent.main ...`
 
 命令示例

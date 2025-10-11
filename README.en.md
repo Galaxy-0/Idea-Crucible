@@ -51,7 +51,11 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
 - Create venv: `uv venv` (or `uv venv -p 3.11`)
 - Install core deps: `uv sync` (no extras by default)
 - Add OpenAI extra: `uv sync --extra llm`
-- Set API key: `export OPENAI_API_KEY=...`
+- Environment variables:
+  - Copy `.env.example` to `.env` and fill:
+    - `LLM_API_URL` (e.g., https://api.openai.com/v1)
+    - `LLM_API_KEY` (your API key)
+  - Or set `OPENAI_API_KEY` in your shell
 - Run: `uv run python -m agent.main ...`
 
 Commands
