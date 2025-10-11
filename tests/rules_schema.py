@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+import sys
 import glob
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 
 def assert_rule_files() -> None:
@@ -33,4 +35,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
