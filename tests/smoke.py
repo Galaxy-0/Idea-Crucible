@@ -30,7 +30,7 @@ def main() -> None:
             str(idea_path),
         ])
 
-    # Try LLM eval only if API key is present, otherwise skip (CI-safe)
+    # Try LLM eval only if an API key is present (legacy env), otherwise skip (CI-safe)
     if os.environ.get("OPENAI_API_KEY"):
         out = run_cmd([
             sys.executable,
@@ -39,8 +39,6 @@ def main() -> None:
             "evaluate",
             "--idea",
             str(idea_path),
-            "--mode",
-            "llm-only",
         ])
         verdict_path = Path(out.splitlines()[-1].strip())
         assert verdict_path.exists(), f"Verdict path not found: {verdict_path}"
