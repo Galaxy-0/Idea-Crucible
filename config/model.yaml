@@ -1,6 +1,7 @@
 provider: openai
 model: gpt-4o-mini
-api_key_env: OPENAI_API_KEY
+base_url: https://api.openai.com/v1
+api_key: sk-your-key-here
 temperature: 0.2
 max_tokens: 800
 timeout_s: 30

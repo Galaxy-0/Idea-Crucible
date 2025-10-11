@@ -11,7 +11,7 @@
 - `agent/` 核心与命令行
   - `agent/main.py` — 命令：`intake` | `evaluate` | `report`
   - `agent/schemas.py` — 数据模型：`Rule`, `Idea`, `Evidence`, `Verdict`
-  - `agent/engine.py` — 规则匹配与仲裁（MVP）
+- `agent/engine.py` — 规则加载 + LLM 仲裁
 - `config/`
 - （已移除）`config/modes.yaml`、`config/weights.yaml`
   - `config/rules/core/*.yaml` — 红线规则（按类别）
@@ -48,20 +48,17 @@
 - 环境：Python 3.10+
 - 安装 uv：参考 https://docs.astral.sh/uv/
 - 创建虚拟环境：`uv venv`（或 `uv venv -p 3.11`）
-- 安装核心依赖：`uv sync`（默认仅安装核心依赖）
 - 安装依赖：`uv sync`
-- 环境变量：
-  - 复制 `.env.example` 为 `.env` 并填写：
-    - `LLM_API_URL`（如 https://api.openai.com/v1）
-    - `LLM_API_KEY`（你的 API Key）
-  - 或直接在 shell 中设置 `OPENAI_API_KEY`
+- 编辑 `config/model.yaml`：
+  - `base_url`（如 https://api.openai.com/v1）
+  - `api_key`（你的 API Key）
 - 运行：`uv run python -m agent.main ...`
 
 命令示例
 - 录入（intake）：
   `uv run python -m agent.main intake --desc "需要未验证 AGI 的双边市场" --out ideas/demo-idea.yaml`
 - 评估（LLM）：
-  `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
+  `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --model-cfg config/model.yaml`
 - 报告（report）：
   `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
@@ -71,32 +68,6 @@
 - `ideas/demo-idea.yaml`：示例输入
 
 ## 大模型集成
-- 模型配置：`config/model.yaml`（默认 provider=openai，model=gpt-4o-mini，密钥环境变量 `OPENAI_API_KEY`）。
-- 评估模式：`llm-only`（默认）
-- 提示：客户端直接构造 JSON 输出约束的提示
-
-## 使用 uv（推荐）
-- `uv sync` 安装依赖；设置 `.env` 或 `OPENAI_API_KEY` 后直接评估。
-
-
-
-## 评测基准（Agent 分诊）
-目的：验证 Agent 对“是否值得继续（go/caution/deny）”的判断与红线提示是否有参考性，支持回归与比较不同版本/模式。
-
-数据与格式：
-- 位置：`benchmarks/triage/pilot.jsonl`（每行一个样本）
-- 字段：`id`, `idea_path`, `gold_decision` ∈ {deny,caution,go}, 可选 `gold_redlines[]`, `notes`
-- Schema：`benchmarks/triage/schema.json`
-
-运行评测（离线 rules 模式）：
-- `./.venv/bin/python -m agent.main benchmark --data benchmarks/triage/pilot.jsonl --mode rules`
-- 输出：`reports/benchmarks/<slug>/summary.json` 与 `details.jsonl`
-
-指标与建议门槛：
-- 决策准确率 Accuracy：≥ 0.70（MVP），目标 ≥ 0.80
-- 关键类别召回（deny）：≥ 0.90（避免漏报高危）
-- 红线覆盖 Jaccard（宏平均）：≥ 0.60（MVP）
-- 置信度校准：开启 LLM 模式后补充 Brier/ECE（规则模式仅作参考）
-- 理由/下一步：抽样人工复核 10–20%
-
-注：当前中文样本可能因关键词匹配触发过度/不足，属已知限制。可逐步扩充中文关键词或引入更鲁棒的匹配策略。
+- 模型配置：`config/model.yaml`（provider/model/base_url/api_key/temperature 等）。
+- 评估模式：`llm-only`（默认）。
+- 提示：客户端直接构造 JSON 输出约束的提示。

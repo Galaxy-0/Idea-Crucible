@@ -6,17 +6,17 @@ import time
 from typing import Any, Dict, List, Optional
 
 import yaml
-from dotenv import load_dotenv
-
-# Load environment variables from a local .env if present
-load_dotenv()
 
 
 class LLMConfig:
     def __init__(self, cfg: Dict[str, Any]) -> None:
         self.provider = cfg.get("provider", "openai")
         self.model = cfg.get("model", "gpt-4o-mini")
-        self.api_key_env = cfg.get("api_key_env", "OPENAI_API_KEY")
+        # Prefer explicit key and base_url from model.yaml
+        self.api_key = cfg.get("api_key")
+        self.base_url = cfg.get("base_url")
+        # Backward-compat fallback: env name
+        self.api_key_env = cfg.get("api_key_env")
         self.temperature = float(cfg.get("temperature", 0.2))
         self.max_tokens = int(cfg.get("max_tokens", 800))
         self.timeout_s = int(cfg.get("timeout_s", 30))
@@ -37,13 +37,17 @@ class OpenAIClient:
         except Exception as e:
             raise RuntimeError("openai package not installed. Add it to requirements and pip install.") from e
 
-        # Prefer generic envs from .env: LLM_API_KEY and LLM_API_URL
-        api_key = os.environ.get("LLM_API_KEY") or os.environ.get(cfg.api_key_env)
-        base_url = os.environ.get("LLM_API_URL")
+        # Source credentials and base URL from model.yaml
+        api_key = cfg.api_key
+        if not api_key and cfg.api_key_env:
+            api_key = os.environ.get(cfg.api_key_env)
         if not api_key:
-            raise RuntimeError(f"Missing API key env: {cfg.api_key_env}")
+            raise RuntimeError("Missing API key. Set `api_key` in config/model.yaml (preferred), or define `api_key_env` and export it in your shell.")
 
-        self._client = OpenAI(api_key=api_key, base_url=base_url) if base_url else OpenAI(api_key=api_key)
+        if cfg.base_url:
+            self._client = OpenAI(api_key=api_key, base_url=cfg.base_url)
+        else:
+            self._client = OpenAI(api_key=api_key)
         self._cfg = cfg
 
     def complete_json(self, system: str, user: str) -> str:

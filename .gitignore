@@ -5,4 +5,3 @@ __pycache__/
 .DS_Store
 reports/*.verdict.json
 reports/*.md
-.env

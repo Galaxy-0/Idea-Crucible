@@ -10,7 +10,6 @@ authors = [
 dependencies = [
   "pydantic>=2.6",
   "PyYAML>=6.0",
-  "python-dotenv>=1.0.1",
   "openai>=1.40.0",
 ]
 # uv uses [project] dependencies by default; no custom groups needed.

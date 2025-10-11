@@ -47,19 +47,17 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
 
 ## Quickstart (LLM required for evaluation)
 - Python 3.10+
-- Install uv: https://docs.astral.sh/uv/
-- Create venv: `uv venv` (or `uv venv -p 3.11`)
+ - Install uv: https://docs.astral.sh/uv/
+ - Create venv: `uv venv` (or `uv venv -p 3.11`)
  - Install dependencies: `uv sync`
-- Environment variables:
-  - Copy `.env.example` to `.env` and fill:
-    - `LLM_API_URL` (e.g., https://api.openai.com/v1)
-    - `LLM_API_KEY` (your API key)
-  - Or set `OPENAI_API_KEY` in your shell
+ - Configure `config/model.yaml`:
+   - `base_url`: e.g., https://api.openai.com/v1
+   - `api_key`: your API key
 - Run: `uv run python -m agent.main ...`
 
 Commands
 - Intake: `uv run python -m agent.main intake --desc "Two-sided marketplace needing unproven AGI to work" --out ideas/demo-idea.yaml`
-- Evaluate (LLM): `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
+- Evaluate (LLM): `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --model-cfg config/model.yaml`
 - Report: `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
 Optional: None in minimal build (OpenAI client is included by default)
@@ -75,4 +73,3 @@ Optional: None in minimal build (OpenAI client is included by default)
 - Configure provider/model in `config/model.yaml` (default: OpenAI gpt-4o-mini, env `OPENAI_API_KEY`).
 - Modes: `llm-only` (default)
 - Prompt: the client builds a JSON-format request directly.
-
