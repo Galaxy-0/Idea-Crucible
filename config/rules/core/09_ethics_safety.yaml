@@ -1,0 +1,16 @@
+id: RL-009
+scope: core
+category: ethics
+condition: "Ethical/safety red flag beyond mitigation"
+severity: critical
+decision: deny
+rationale: "Systemic harm or abuse vectors that cannot be mitigated are unacceptable."
+keywords: ["harm", "abuse", "unsafe", "bias", "privacy violation"]
+sources:
+  - "Safety guidelines; platform AUPs"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Redesign for safety-by-default and adopt strict mitigations."
+

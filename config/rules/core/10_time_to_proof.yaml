@@ -1,0 +1,16 @@
+id: RL-010
+scope: core
+category: execution
+condition: "Time-to-proof > runway with no intermediate value gates (no RAT path)"
+severity: high
+decision: deny
+rationale: "If proof requires longer than runway with no value gates, risk is terminal."
+keywords: [">36 months", "long R&D", "no MVP", "no RAT"]
+sources:
+  - "RAT/MVP staging best practices"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Define ratcheted proof plan with monetizable intermediate milestones."
+

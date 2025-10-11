@@ -1,0 +1,16 @@
+id: RL-003
+scope: core
+category: data
+condition: "Essential data legally inaccessible or platform-prohibited; no compliant substitute"
+severity: high
+decision: deny
+rationale: "Illegally or contractually inaccessible data blocks delivery; compliance is non-optional."
+keywords: ["no data access", "platform prohibited", "scraping ban", "privacy violation", "GDPR"]
+sources:
+  - "Platform terms; data protection regs (GDPR/CCPA)"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Explore licensed datasets or synthetic/first-party collection with consent."
+

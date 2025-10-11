@@ -1,0 +1,16 @@
+id: RL-002
+scope: core
+category: economics
+condition: "Unit cost lower bound > customer value upper bound within 18–36m"
+severity: critical
+decision: deny
+rationale: "No path to positive unit economics implies unsustainable business."
+keywords: ["unit economics negative", "cost > value", "cannot be cheaper", "hardware too expensive"]
+sources:
+  - "Cost modeling and price elasticity basics"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Identify scope reductions or alternative delivery models to cross value threshold."
+

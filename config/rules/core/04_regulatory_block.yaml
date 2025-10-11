@@ -1,0 +1,16 @@
+id: RL-004
+scope: core
+category: regulatory
+condition: "Regulatory hard block or licensing lead time > runway; no staged path"
+severity: critical
+decision: deny
+rationale: "If approval timelines exceed runway with no staged validation, risk is terminal."
+keywords: ["FDA", "banking charter", "securities license", "medical device", "clinical trial required"]
+sources:
+  - "Industry-specific regulatory guidance"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Pursue staged, non-regulated adjacent use cases to validate demand."
+

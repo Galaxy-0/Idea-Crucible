@@ -1,0 +1,16 @@
+id: RL-006
+scope: core
+category: distribution
+condition: "Distribution structurally impossible to initial 1k targets"
+severity: critical
+decision: deny
+rationale: "If the first 1k users are unreachable through any channel, growth cannot start."
+keywords: ["unreachable users", "no channel", "cannot reach first 1000", "no distribution path"]
+sources:
+  - "Go-to-market fundamentals"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Identify wedge segments and credible channels to access the first cohort."
+

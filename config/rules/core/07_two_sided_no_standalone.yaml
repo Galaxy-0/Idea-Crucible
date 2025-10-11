@@ -1,0 +1,16 @@
+id: RL-007
+scope: core
+category: network
+condition: "Two-sided network effects with no single-sided stand-alone value"
+severity: high
+decision: deny
+rationale: "Chicken-and-egg dynamics without stand-alone utility rarely escape zero."
+keywords: ["two-sided", "chicken-and-egg", "marketplace no utility", "no single-sided value"]
+sources:
+  - "Network effects and cold start literature"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Design a single-sided tool that delivers value pre-network."
+

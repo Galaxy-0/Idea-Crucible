@@ -1,0 +1,13 @@
+intent: "Two-sided marketplace for expert answers requiring AGI-quality responses to be viable"
+user: "Consumers who need instant expert advice"
+scenario: "Ask any question and get an authoritative, nuanced answer"
+triggers: "Users face high uncertainty and want trustworthy guidance"
+alts: "Search engines, forums, existing Q&A sites"
+assumptions:
+  - "AGI-level reasoning is required for satisfactory answers"
+  - "Cold-start without experts is acceptable because AI fills the gap"
+  - "Platform APIs will allow necessary data access"
+risks:
+  - "Two-sided cold start with no single-sided value"
+  - "Platform policy changes could restrict data sources"
+

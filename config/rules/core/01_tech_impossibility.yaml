@@ -1,0 +1,16 @@
+id: RL-001
+scope: core
+category: technical
+condition: "Technical/physical impossibility or unproven prerequisite science within horizon"
+severity: critical
+decision: deny
+rationale: "If the core premise requires physics or science not yet demonstrated, execution is blocked."
+keywords: ["impossible", "violate physics", "unproven", "breakthrough", "fusion", "AGI-required", "FTL"]
+sources:
+  - "Physics and engineering constraints literature"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Redefine scope to eliminate unproven prerequisite or add staged demo of feasibility."
+

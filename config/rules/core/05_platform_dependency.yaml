@@ -1,0 +1,16 @@
+id: RL-005
+scope: core
+category: platform
+condition: "Single platform dependency with kill-switch risk and no mitigation"
+severity: high
+decision: caution
+rationale: "Platform policy or API changes can zero-out product value overnight."
+keywords: ["depends on single platform", "API dependency", "platform risk", "kill switch"]
+sources:
+  - "Platform risk case studies"
+owner: core
+version: v1
+sunset: 2027-12-31
+next_steps:
+  - "Design multi-homing or proprietary data/process to reduce dependency."
+
