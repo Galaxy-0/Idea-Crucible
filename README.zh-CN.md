@@ -50,8 +50,15 @@
 - 创建虚拟环境：`uv venv`（或 `uv venv -p 3.11`）
 - 安装依赖：`uv sync`
 - 编辑 `config/model.yaml`：
-  - `base_url`（如 https://api.openai.com/v1）
-  - `api_key`（你的 API Key）
+  - 使用 OpenRouter：
+    - `base_url`: https://openrouter.ai/api/v1
+    - `model`: google/gemini-2.5-flash-lite-preview-09-2025
+    - `api_key`: 你的 OpenRouter API Key
+    - 可选 `headers`：按 OpenRouter 文档设置 `HTTP-Referer`、`X-Title`
+  - 或使用 OpenAI 直连：
+    - `base_url`: https://api.openai.com/v1
+    - `model`: gpt-4o-mini（或自选）
+    - `api_key`: 你的 OpenAI API Key
 - 运行：`uv run python -m agent.main ...`
 
 命令示例

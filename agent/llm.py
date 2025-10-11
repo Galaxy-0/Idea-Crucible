@@ -15,6 +15,7 @@ class LLMConfig:
         # Prefer explicit key and base_url from model.yaml
         self.api_key = cfg.get("api_key")
         self.base_url = cfg.get("base_url")
+        self.headers: Dict[str, str] = cfg.get("headers") or {}
         # Backward-compat fallback: env name
         self.api_key_env = cfg.get("api_key_env")
         self.temperature = float(cfg.get("temperature", 0.2))
@@ -44,10 +45,12 @@ class OpenAIClient:
         if not api_key:
             raise RuntimeError("Missing API key. Set `api_key` in config/model.yaml (preferred), or define `api_key_env` and export it in your shell.")
 
+        kwargs: Dict[str, Any] = {"api_key": api_key}
         if cfg.base_url:
-            self._client = OpenAI(api_key=api_key, base_url=cfg.base_url)
-        else:
-            self._client = OpenAI(api_key=api_key)
+            kwargs["base_url"] = cfg.base_url
+        if cfg.headers:
+            kwargs["default_headers"] = cfg.headers
+        self._client = OpenAI(**kwargs)
         self._cfg = cfg
 
     def complete_json(self, system: str, user: str) -> str:

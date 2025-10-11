@@ -50,9 +50,16 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
  - Install uv: https://docs.astral.sh/uv/
  - Create venv: `uv venv` (or `uv venv -p 3.11`)
  - Install dependencies: `uv sync`
- - Configure `config/model.yaml`:
-   - `base_url`: e.g., https://api.openai.com/v1
-   - `api_key`: your API key
+- Configure `config/model.yaml`:
+   - For OpenRouter:
+     - `base_url`: https://openrouter.ai/api/v1
+     - `model`: google/gemini-2.5-flash-lite-preview-09-2025
+     - `api_key`: your OpenRouter API key
+     - Optional `headers`: set `HTTP-Referer` and `X-Title` per OpenRouter docs
+   - For OpenAI direct:
+     - `base_url`: https://api.openai.com/v1
+     - `model`: gpt-4o-mini (or your choice)
+     - `api_key`: your OpenAI API key
 - Run: `uv run python -m agent.main ...`
 
 Commands
