@@ -45,11 +45,15 @@ class OpenAIClient:
         if not api_key:
             raise RuntimeError("Missing API key. Set `api_key` in config/model.yaml (preferred), or define `api_key_env` and export it in your shell.")
 
-        kwargs: Dict[str, Any] = {"api_key": api_key}
+        # Build client with explicit Authorization header (for OpenRouter compatibility)
+        headers: Dict[str, str] = {}
+        if cfg.headers:
+            headers.update(cfg.headers)
+        headers.setdefault("Authorization", f"Bearer {api_key}")
+
+        kwargs: Dict[str, Any] = {"api_key": api_key, "default_headers": headers}
         if cfg.base_url:
             kwargs["base_url"] = cfg.base_url
-        if cfg.headers:
-            kwargs["default_headers"] = cfg.headers
         self._client = OpenAI(**kwargs)
         self._cfg = cfg
 
@@ -69,10 +73,38 @@ class OpenAIClient:
                 )
                 return resp.choices[0].message.content or "{}"
             except Exception as e:
-                if attempt >= self._cfg.retries:
-                    raise
+                # On auth or 4xx errors, try raw HTTPX fallback once
+                if attempt == self._cfg.retries:
+                    try:
+                        return self._complete_json_httpx(system, user)
+                    except Exception:
+                        raise
                 time.sleep(0.5 * (attempt + 1))
         return "{}"
+
+    def _complete_json_httpx(self, system: str, user: str) -> str:
+        import httpx
+        url = (self._cfg.base_url or "https://api.openai.com/v1").rstrip("/") + "/chat/completions"
+        headers = {"Authorization": f"Bearer {self._cfg.api_key}", "Content-Type": "application/json"}
+        headers.update(getattr(self._cfg, "headers", {}) or {})
+        payload = {
+            "model": self._cfg.model,
+            "temperature": self._cfg.temperature,
+            "max_tokens": self._cfg.max_tokens,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            "response_format": {"type": "json_object"},
+        }
+        with httpx.Client(timeout=self._cfg.timeout_s) as client:
+            r = client.post(url, headers=headers, json=payload)
+            if r.status_code >= 400:
+                # Surface server error for easier debugging
+                raise RuntimeError(f"LLM HTTP {r.status_code}: {r.text}")
+            data = r.json()
+            content = data["choices"][0]["message"]["content"]
+            return content or "{}"
 
 
 def get_client(cfg: LLMConfig):
