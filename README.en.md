@@ -49,8 +49,7 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
 - Python 3.10+
 - Install uv: https://docs.astral.sh/uv/
 - Create venv: `uv venv` (or `uv venv -p 3.11`)
-- Install core deps: `uv sync` (no extras by default)
-- Add OpenAI extra: `uv sync --extra llm`
+ - Install dependencies: `uv sync`
 - Environment variables:
   - Copy `.env.example` to `.env` and fill:
     - `LLM_API_URL` (e.g., https://api.openai.com/v1)
@@ -63,9 +62,7 @@ Commands
 - Evaluate (LLM): `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
 - Report: `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
-Optional (Claude Agent)
-- `uv sync --extra claude` and install `@anthropic-ai/claude-code`, then:
-  - `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
+Optional: None in minimal build (OpenAI client is included by default)
 
 ## Files of Interest
   (modes/weights removed; LLM-based evaluation only)
@@ -76,15 +73,6 @@ Optional (Claude Agent)
 
 ## LLM Integration
 - Configure provider/model in `config/model.yaml` (default: OpenAI gpt-4o-mini, env `OPENAI_API_KEY`).
-- Modes:
-  - `llm-only` (default): LLM returns the structured verdict directly.
-  - `agent-claude`: evaluate via Claude Agent SDK.
-- Prompt: `templates/llm_prompt.txt` (reference; the client builds a JSON-format request).
+- Modes: `llm-only` (default)
+- Prompt: the client builds a JSON-format request directly.
 
-## Claude Agent SDK Integration
-- Install prerequisites:
-  - `pip install claude-agent-sdk`
-  - `npm install -g @anthropic-ai/claude-code` (Claude Code 2.0.0+)
-  - Ensure Node.js is installed and in PATH
-- Run: `python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
-- The agent streams via Claude Code and returns a structured JSON verdict.

@@ -11,14 +11,6 @@ dependencies = [
   "pydantic>=2.6",
   "PyYAML>=6.0",
   "python-dotenv>=1.0.1",
-]
-
-[project.optional-dependencies]
-llm = [
   "openai>=1.40.0",
 ]
-claude = [
-  "claude-agent-sdk>=0.2.0",
-]
-
 # uv uses [project] dependencies by default; no custom groups needed.

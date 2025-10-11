@@ -1,5 +1,0 @@
-{"id": "zh-ideology-bench", "idea_path": "ideas/ideology-benchmark.yaml", "gold_decision": "caution", "gold_redlines": ["RL-009"], "notes": "Ethics/safety and policy risks likely warrant caution."}
-{"id": "en-doxxing-platform", "idea_path": "ideas/doxxing-platform.yaml", "gold_decision": "deny", "gold_redlines": ["RL-009"], "notes": "Privacy violation and harm vectors."}
-{"id": "en-two-sided-no-utility", "idea_path": "ideas/two-sided-no-utility.yaml", "gold_decision": "deny", "gold_redlines": ["RL-007"], "notes": "Chicken-and-egg with no single-sided value."}
-{"id": "en-straightforward-tool", "idea_path": "ideas/simple-tool.yaml", "gold_decision": "go", "gold_redlines": [], "notes": "Low-risk utility tool with plausible path."}
-

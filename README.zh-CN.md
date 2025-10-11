@@ -49,7 +49,7 @@
 - 安装 uv：参考 https://docs.astral.sh/uv/
 - 创建虚拟环境：`uv venv`（或 `uv venv -p 3.11`）
 - 安装核心依赖：`uv sync`（默认仅安装核心依赖）
-- 启用 OpenAI 扩展：`uv sync --extra llm`
+- 安装依赖：`uv sync`
 - 环境变量：
   - 复制 `.env.example` 为 `.env` 并填写：
     - `LLM_API_URL`（如 https://api.openai.com/v1）
@@ -62,8 +62,6 @@
   `uv run python -m agent.main intake --desc "需要未验证 AGI 的双边市场" --out ideas/demo-idea.yaml`
 - 评估（LLM）：
   `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
-- 评估（Claude Agent SDK）：
-  `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
 - 报告（report）：
   `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
@@ -71,26 +69,16 @@
 - `config/rules/core/`：10 条红线（YAML）
 - `templates/report.md`：一页报告模板
 - `ideas/demo-idea.yaml`：示例输入
-- `reports/sample.md`：示例报告
 
 ## 大模型集成
 - 模型配置：`config/model.yaml`（默认 provider=openai，model=gpt-4o-mini，密钥环境变量 `OPENAI_API_KEY`）。
-- 评估模式：
-  - `llm-only`（默认）：直接由模型输出结构化判定。
-  - `agent-claude`：通过 Claude Agent SDK 评估。
-- 提示模板参考：`templates/llm_prompt.txt`（实际请求使用 JSON 输出约束）。
+- 评估模式：`llm-only`（默认）
+- 提示：客户端直接构造 JSON 输出约束的提示
 
-## 使用 uv（推荐）与可选扩展
-- 默认：`uv sync` 安装核心依赖；评估需 `uv sync --extra llm` 并设置 `OPENAI_API_KEY`。
-- Claude Agent（可选）：`uv sync --extra claude` 后使用 `--mode agent-claude`（需 Node.js 与 `@anthropic-ai/claude-code`）。
+## 使用 uv（推荐）
+- `uv sync` 安装依赖；设置 `.env` 或 `OPENAI_API_KEY` 后直接评估。
 
-## 接入 Claude Agent SDK
-- 依赖安装：
-  - `pip install claude-agent-sdk`
-  - `npm install -g @anthropic-ai/claude-code`（Claude Code 2.0.0+）
-  - 安装 Node.js 并确保在 PATH 中
-- 运行：`python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
-- SDK 通过 Claude Code 流式交互，最终返回结构化 JSON 判定。
+
 
 ## 评测基准（Agent 分诊）
 目的：验证 Agent 对“是否值得继续（go/caution/deny）”的判断与红线提示是否有参考性，支持回归与比较不同版本/模式。
