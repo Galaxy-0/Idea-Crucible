@@ -20,6 +20,4 @@ claude = [
   "claude-agent-sdk>=0.2.0",
 ]
 
-[tool.uv]
-default-groups = ["main"]
-
+# uv uses [project] dependencies by default; no custom groups needed.
