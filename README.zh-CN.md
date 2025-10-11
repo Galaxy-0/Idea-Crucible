@@ -63,13 +63,10 @@
     - 可根据需要调整 `language`（如 en、zh-CN）
 - 运行：`uv run python -m agent.main ...`
 
-命令示例
-- 录入（intake）：
-  `uv run python -m agent.main intake --desc "需要未验证 AGI 的双边市场" --out ideas/demo-idea.yaml`
-- 评估（LLM）：
-  `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --model-cfg config/model.yaml`
-- 报告（report）：
-  `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
+命令示例（简化版）
+- 录入：`uv run -m agent.cli intake "你的想法一句话"`
+- 评估：`uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.yaml`
+- 报告：`uv run -m agent.cli report ideas/demo-idea.yaml`
 
 本地 LLM 连通性测试（CI 不跑）
 - 复制 `config/model.local.yaml.example` 为 `config/model.yaml` 并填写 Key

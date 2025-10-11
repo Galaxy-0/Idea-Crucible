@@ -1,0 +1,8 @@
+intent: 基于AI的个性化营养补剂订阅服务
+user: early adopters
+scenario: initial use case
+triggers: pain/need trigger
+alts: status quo / competitors
+assumptions:
+- 基于AI的个性化营养补剂订阅服务
+risks: []

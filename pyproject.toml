@@ -12,4 +12,9 @@ dependencies = [
   "PyYAML>=6.0",
   "openai>=1.40.0",
 ]
+
+[project.scripts]
+intake = "agent.cli:intake_entry"
+evaluate = "agent.cli:evaluate_entry"
+report = "agent.cli:report_entry"
 # uv uses [project] dependencies by default; no custom groups needed.

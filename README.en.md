@@ -64,10 +64,10 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
     - Adjust `language` as desired (e.g., en, zh-CN)
 - Run: `uv run python -m agent.main ...`
 
-Commands
-- Intake: `uv run python -m agent.main intake --desc "Two-sided marketplace needing unproven AGI to work" --out ideas/demo-idea.yaml`
-- Evaluate (LLM): `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --model-cfg config/model.yaml`
-- Report: `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
+Commands (simplified)
+- Intake: `uv run -m agent.cli intake "One-line idea"`
+- Evaluate: `uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.yaml`
+- Report: `uv run -m agent.cli report ideas/demo-idea.yaml`
 
 Local-only LLM test (not in CI)
 - Copy `config/model.local.yaml.example` to `config/model.yaml` and fill your key
