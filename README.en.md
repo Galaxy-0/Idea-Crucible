@@ -67,6 +67,10 @@ Commands
 - Evaluate (LLM): `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --model-cfg config/model.yaml`
 - Report: `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
+Local-only LLM test (not in CI)
+- Copy `config/model.local.yaml.example` to `config/model.yaml` and fill your key
+- Run: `uv run python scripts/local_llm_basic.py`
+
 Optional: None in minimal build (OpenAI client is included by default)
 
 ## Files of Interest

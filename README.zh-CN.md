@@ -69,6 +69,10 @@
 - 报告（report）：
   `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
+本地 LLM 连通性测试（CI 不跑）
+- 复制 `config/model.local.yaml.example` 为 `config/model.yaml` 并填写 Key
+- 运行：`uv run python scripts/local_llm_basic.py`
+
 ## 关键文件
 - `config/rules/core/`：10 条红线（YAML）
 - `templates/report.md`：一页报告模板

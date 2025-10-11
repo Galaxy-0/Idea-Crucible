@@ -1,0 +1,14 @@
+provider: openai
+model: google/gemini-2.5-flash-lite-preview-09-2025
+base_url: https://openrouter.ai/api/v1
+api_key: sk-or-your-openrouter-key
+headers:
+  # Optional headers for OpenRouter rate-limiting attribution
+  # HTTP-Referer: https://your-site-or-repo
+  # X-Title: Idea-Crucible (local)
+temperature: 0.2
+max_tokens: 800
+timeout_s: 30
+retries: 2
+language: auto
+
