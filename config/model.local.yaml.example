@@ -10,5 +10,4 @@ temperature: 0.2
 max_tokens: 800
 timeout_s: 30
 retries: 2
-language: auto
-
+language: zh-CN

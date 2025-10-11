@@ -55,10 +55,12 @@
     - `model`: google/gemini-2.5-flash-lite-preview-09-2025
     - `api_key`: 你的 OpenRouter API Key
     - 可选 `headers`：按 OpenRouter 文档设置 `HTTP-Referer`、`X-Title`
+    - `language`: zh-CN（默认输出简体中文）
   - 或使用 OpenAI 直连：
     - `base_url`: https://api.openai.com/v1
     - `model`: gpt-4o-mini（或自选）
     - `api_key`: 你的 OpenAI API Key
+    - 可根据需要调整 `language`（如 en、zh-CN）
 - 运行：`uv run python -m agent.main ...`
 
 命令示例

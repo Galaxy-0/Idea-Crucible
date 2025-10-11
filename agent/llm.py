@@ -147,9 +147,12 @@ def llm_verdict_json(idea: Dict[str, Any], rules: List[Dict[str, Any]], cfg: LLM
     )
 
     rubric = build_rubric(rules)
-    language_hint = cfg.language
+    language_hint = (cfg.language or "auto").strip()
+    lang_directive = ""
+    if language_hint and language_hint.lower() != "auto":
+        lang_directive = f"Respond strictly in {language_hint}."
     user = (
-        f"Language: {language_hint}.\n"
+        f"Language: {language_hint}. {lang_directive}\n"
         "Evaluate this Idea against Redlines. Be conservative.\n\n"
         f"Idea:\n{json.dumps(idea, ensure_ascii=False, indent=2)}\n\n"
         f"Redlines:\n{rubric}\n\n"

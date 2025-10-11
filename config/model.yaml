@@ -10,4 +10,4 @@ temperature: 0.2
 max_tokens: 800
 timeout_s: 30
 retries: 2
-language: auto # en | zh-CN | auto
+language: zh-CN # zh-CN ensures输出为简体中文
