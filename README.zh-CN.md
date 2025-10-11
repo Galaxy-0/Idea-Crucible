@@ -45,27 +45,26 @@
 - evaluate：加载规则并匹配，合成决策与置信度
 - report：渲染一页报告（含理由与下一步）
 
-## 快速开始
+## 快速开始（评估依赖大模型）
 - 环境：Python 3.10+
-- 安装依赖：`pip install -r requirements.txt`
+- 安装 uv：参考 https://docs.astral.sh/uv/
+- 创建虚拟环境：`uv venv`（或 `uv venv -p 3.11`）
+- 安装核心依赖：`uv sync`（默认仅安装核心依赖）
+- 启用 OpenAI 扩展：`uv sync --extra llm`
+- 设置密钥：`export OPENAI_API_KEY=...`
+- 运行：`uv run python -m agent.main ...`
 
 命令示例
 - 录入（intake）：
-  `python -m agent.main intake --desc "需要未验证 AGI 的双边市场" --out ideas/demo-idea.yaml`
-- 评估（规则逻辑）：
-  `python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode logic-only`
-- 评估（混合：规则+大模型）：
-  `python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode hybrid --model-cfg config/model.yaml`
-- 评估（仅大模型）：
-  `python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
+  `uv run python -m agent.main intake --desc "需要未验证 AGI 的双边市场" --out ideas/demo-idea.yaml`
+- 评估（LLM）：
+  `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
 - 评估（Claude Agent SDK）：
-  `python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
+  `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
 - 报告（report）：
-  `python -m agent.main report --idea ideas/demo-idea.yaml`
+  `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
 ## 关键文件
-- `config/weights.yaml`：严重级别权重与阈值
-- `config/modes.yaml`：评估模式预设
 - `config/rules/core/`：10 条红线（YAML）
 - `templates/report.md`：一页报告模板
 - `ideas/demo-idea.yaml`：示例输入
@@ -74,23 +73,13 @@
 ## 大模型集成
 - 模型配置：`config/model.yaml`（默认 provider=openai，model=gpt-4o-mini，密钥环境变量 `OPENAI_API_KEY`）。
 - 评估模式：
-  - `logic-only`：仅用规则引擎。
-  - `hybrid`：与大模型结果保守合并（deny > caution > go）。
-  - `llm-only`：完全由大模型输出结构化判定。
+  - `llm-only`（默认）：直接由模型输出结构化判定。
+  - `agent-claude`：通过 Claude Agent SDK 评估。
 - 提示模板参考：`templates/llm_prompt.txt`（实际请求使用 JSON 输出约束）。
 
-## 使用 uv（推荐）
-- 安装 uv：参考 https://docs.astral.sh/uv/
-- 创建虚拟环境：`uv venv`（或 `uv venv -p 3.11`）
-- 安装依赖：`uv sync`（默认仅安装核心依赖，不包含任何外部模型/SDK）
-- 运行命令：
-  - 录入：`uv run python -m agent.main intake --desc "..." --out ideas/demo-idea.yaml`
-  - 评估（规则逻辑，默认）：`uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode logic-only`
-  - 报告：`uv run python -m agent.main report --idea ideas/demo-idea.yaml`
-
-## 可选启用 LLM（uv extras）
-- OpenAI：`uv sync --extra llm` 后即可使用 `--mode hybrid/llm-only`。
-- Claude Agent SDK：`uv sync --extra claude` 后可使用 `--mode agent-claude`（需安装 Node.js 与 `@anthropic-ai/claude-code`）。
+## 使用 uv（推荐）与可选扩展
+- 默认：`uv sync` 安装核心依赖；评估需 `uv sync --extra llm` 并设置 `OPENAI_API_KEY`。
+- Claude Agent（可选）：`uv sync --extra claude` 后使用 `--mode agent-claude`（需 Node.js 与 `@anthropic-ai/claude-code`）。
 
 ## 接入 Claude Agent SDK
 - 依赖安装：

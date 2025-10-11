@@ -45,25 +45,22 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
 - evaluate: load rules, run conditions, compute decision + confidence
 - report: render one-page verdict with citations and next steps
 
-## Quickstart
+## Quickstart (LLM required for evaluation)
 - Python 3.10+
-- Recommended (uv):
-  - Install uv: see https://docs.astral.sh/uv/
-  - Create venv: `uv venv` (or `uv venv -p 3.11`)
-  - Install deps: `uv sync` (core only, no external tools by default)
-  - Run: `uv run python -m agent.main ...`
-- Alternatively (pip): `pip install -r requirements.txt`
+- Install uv: https://docs.astral.sh/uv/
+- Create venv: `uv venv` (or `uv venv -p 3.11`)
+- Install core deps: `uv sync` (no extras by default)
+- Add OpenAI extra: `uv sync --extra llm`
+- Set API key: `export OPENAI_API_KEY=...`
+- Run: `uv run python -m agent.main ...`
 
 Commands
 - Intake: `uv run python -m agent.main intake --desc "Two-sided marketplace needing unproven AGI to work" --out ideas/demo-idea.yaml`
-- Evaluate (logic-only, default): `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode logic-only`
+- Evaluate (LLM): `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
 - Report: `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
 
-Optional LLM (install extras when needed)
-- Add OpenAI extra: `uv sync --extra llm` then:
-  - Hybrid: `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode hybrid --model-cfg config/model.yaml`
-  - LLM-only: `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode llm-only --model-cfg config/model.yaml`
-- Add Claude Agent extra: `uv sync --extra claude` then:
+Optional (Claude Agent)
+- `uv sync --extra claude` and install `@anthropic-ai/claude-code`, then:
   - `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml --mode agent-claude`
 
 ## Files of Interest
@@ -77,9 +74,8 @@ Optional LLM (install extras when needed)
 ## LLM Integration
 - Configure provider/model in `config/model.yaml` (default: OpenAI gpt-4o-mini, env `OPENAI_API_KEY`).
 - Modes:
-  - `logic-only`: rule engine only.
-  - `hybrid`: merge rule engine with LLM verdict conservatively.
-  - `llm-only`: LLM returns the structured verdict directly.
+  - `llm-only` (default): LLM returns the structured verdict directly.
+  - `agent-claude`: evaluate via Claude Agent SDK.
 - Prompt: `templates/llm_prompt.txt` (reference; the client builds a JSON-format request).
 
 ## Claude Agent SDK Integration

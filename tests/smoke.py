@@ -30,40 +30,40 @@ def main() -> None:
             str(idea_path),
         ])
 
-    # Evaluate (logic-only)
-    out = run_cmd([
-        sys.executable,
-        "-m",
-        "agent.main",
-        "evaluate",
-        "--idea",
-        str(idea_path),
-        "--mode",
-        "logic-only",
-    ])
-    verdict_path = Path(out.splitlines()[-1].strip())
-    assert verdict_path.exists(), f"Verdict path not found: {verdict_path}"
-    data = json.loads(verdict_path.read_text(encoding="utf-8"))
-    for k in ["decision", "conf_level", "reasons", "redlines", "next_steps"]:
-        assert k in data, f"Missing key in verdict: {k}"
+    # Try LLM eval only if API key is present, otherwise skip (CI-safe)
+    if os.environ.get("OPENAI_API_KEY"):
+        out = run_cmd([
+            sys.executable,
+            "-m",
+            "agent.main",
+            "evaluate",
+            "--idea",
+            str(idea_path),
+            "--mode",
+            "llm-only",
+        ])
+        verdict_path = Path(out.splitlines()[-1].strip())
+        assert verdict_path.exists(), f"Verdict path not found: {verdict_path}"
+        data = json.loads(verdict_path.read_text(encoding="utf-8"))
+        for k in ["decision", "conf_level", "reasons", "redlines", "next_steps"]:
+            assert k in data, f"Missing key in verdict: {k}"
 
-    # Report render
-    out = run_cmd([
-        sys.executable,
-        "-m",
-        "agent.main",
-        "report",
-        "--idea",
-        str(idea_path),
-    ])
-    report_path = Path(out.splitlines()[-1].strip())
-    assert report_path.exists(), f"Report path not found: {report_path}"
-    content = report_path.read_text(encoding="utf-8")
-    assert "结论" in content or "decision" in content.lower(), "Report content seems empty"
+        # Report render
+        out = run_cmd([
+            sys.executable,
+            "-m",
+            "agent.main",
+            "report",
+            "--idea",
+            str(idea_path),
+        ])
+        report_path = Path(out.splitlines()[-1].strip())
+        assert report_path.exists(), f"Report path not found: {report_path}"
+        content = report_path.read_text(encoding="utf-8")
+        assert "结论" in content or "decision" in content.lower(), "Report content seems empty"
 
     print("Smoke test passed.")
 
 
 if __name__ == "__main__":
     main()
-

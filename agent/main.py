@@ -9,14 +9,13 @@ from typing import Any
 import yaml
 
 from .schemas import Idea
-from .engine import load_rules, load_weights, arbitrate, arbitrate_llm
+from .engine import load_rules, arbitrate_llm
 from .claude_agent import evaluate_with_claude_agent
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_DIR = ROOT / "config"
 RULES_DIR = CONFIG_DIR / "rules" / "core"
-WEIGHTS_PATH = CONFIG_DIR / "weights.yaml"
 MODEL_CFG_PATH = CONFIG_DIR / "model.yaml"
 TEMPLATES_DIR = ROOT / "templates"
 IDEAS_DIR = ROOT / "ideas"
@@ -64,29 +63,15 @@ def cmd_evaluate(args: argparse.Namespace) -> None:
         idea = Idea(**(yaml.safe_load(f) or {}))
 
     rules = load_rules(str(RULES_DIR))
-    mode = args.mode or "logic-only"
+    mode = args.mode or "llm-only"
 
-    if mode == "logic-only":
-        weights = load_weights(str(WEIGHTS_PATH)) if WEIGHTS_PATH.exists() else {}
-        verdict = arbitrate(idea, rules, weights)
-    elif mode == "llm-only":
+    if mode == "llm-only":
         model_cfg = str(Path(args.model_cfg or MODEL_CFG_PATH))
         verdict = arbitrate_llm(idea, rules, model_cfg, mode="llm-only")
     elif mode == "agent-claude":
         verdict = evaluate_with_claude_agent(idea, rules)
-    else:  # hybrid
-        weights = load_weights(str(WEIGHTS_PATH)) if WEIGHTS_PATH.exists() else {}
-        base = arbitrate(idea, rules, weights)
-        model_cfg = str(Path(args.model_cfg or MODEL_CFG_PATH))
-        llm_v = arbitrate_llm(idea, rules, model_cfg, mode="hybrid")
-        # Conservative merge: take the "worst" decision order deny > caution > go
-        order = {"deny": 2, "caution": 1, "go": 0}
-        merged_decision = base.decision if order.get(base.decision, 0) >= order.get(llm_v.decision, 0) else llm_v.decision
-        reasons = (base.reasons or []) + (llm_v.reasons or [])
-        redlines = list(dict.fromkeys((base.redlines or []) + (llm_v.redlines or [])))
-        next_steps = llm_v.next_steps or base.next_steps or []
-        conf = max(base.conf_level, llm_v.conf_level)
-        verdict = type(base)(decision=merged_decision, reasons=reasons, conf_level=conf, redlines=redlines, next_steps=next_steps)
+    else:
+        raise SystemExit("Unsupported mode. Use llm-only or agent-claude.")
 
     slug = slugify(Path(args.idea).stem)
     out_json = REPORTS_DIR / f"{slug}.verdict.json"
@@ -157,9 +142,9 @@ def build_parser() -> argparse.ArgumentParser:
     s.set_defaults(func=cmd_intake)
 
     # evaluate
-    s = sub.add_parser("evaluate", help="Evaluate an idea against redline rules")
+    s = sub.add_parser("evaluate", help="Evaluate an idea against redline rules (LLM required)")
     s.add_argument("--idea", required=True, type=str, help="Path to idea YAML")
-    s.add_argument("--mode", choices=["logic-only", "hybrid", "llm-only", "agent-claude"], default="logic-only", help="Evaluation mode")
+    s.add_argument("--mode", choices=["llm-only", "agent-claude"], default="llm-only", help="Evaluation mode")
     s.add_argument("--model-cfg", type=str, help="Path to LLM config (YAML)")
     s.set_defaults(func=cmd_evaluate)
 
