@@ -10,7 +10,6 @@ sources:
   - "RAT/MVP staging best practices"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Define ratcheted proof plan with monetizable intermediate milestones."
-

@@ -10,7 +10,6 @@ sources:
   - "Moat taxonomy: data, process embed, network, scale"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Pursue data network effects, workflow embed, or scale cost curves."
-

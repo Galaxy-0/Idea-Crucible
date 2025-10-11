@@ -10,7 +10,6 @@ sources:
   - "Platform risk case studies"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Design multi-homing or proprietary data/process to reduce dependency."
-

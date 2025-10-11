@@ -10,7 +10,6 @@ sources:
   - "Cost modeling and price elasticity basics"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Identify scope reductions or alternative delivery models to cross value threshold."
-

@@ -10,7 +10,6 @@ sources:
   - "Platform terms; data protection regs (GDPR/CCPA)"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Explore licensed datasets or synthetic/first-party collection with consent."
-

@@ -10,7 +10,6 @@ sources:
   - "Industry-specific regulatory guidance"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Pursue staged, non-regulated adjacent use cases to validate demand."
-

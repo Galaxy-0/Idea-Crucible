@@ -10,7 +10,6 @@ sources:
   - "Safety guidelines; platform AUPs"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Redesign for safety-by-default and adopt strict mitigations."
-

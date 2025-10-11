@@ -10,7 +10,6 @@ sources:
   - "Physics and engineering constraints literature"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Redefine scope to eliminate unproven prerequisite or add staged demo of feasibility."
-

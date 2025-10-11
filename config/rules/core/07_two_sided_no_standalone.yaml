@@ -10,7 +10,6 @@ sources:
   - "Network effects and cold start literature"
 owner: core
 version: v1
-sunset: 2027-12-31
+sunset: "2027-12-31"
 next_steps:
   - "Design a single-sided tool that delivers value pre-network."
-
