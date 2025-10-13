@@ -11,9 +11,10 @@
   - [x] 文档一致性：README（中/英）统一“LLM-only”与 `config/model.local.yaml` 示例
 
 - 数据集巩固（第2–3天）
-  - triage 草稿自动生成：用当前 verdicts 产出 `triage.jsonl` 初稿（decision/redlines/note），只需人工终审
-  - 质量抽检：抽 20% 样本人工复核（决策一致性、红线命中、理由合理性）
-  - 数据卡补充：来源与许可、红线版本、分布统计（deny/caution/go 占比）
+  - [x] triage 草稿自动生成与定稿：已由 `triage.draft.jsonl` 产出并合并为 `triage.jsonl`（43 行），人工终审完成（3 处微调已应用）
+  - [x] 质量抽检：已生成 20% 抽样集 `review_samples.jsonl`，与 triage 内容一致性良好
+  - [x] 数据卡补充：已在数据集仓库 `DATA_CARD.md` 中完善来源/许可/规则版本与分布统计（含占比），新增 Known Limitations；提供 `scripts/update_data_card.py` 一键刷新
+  - 参考：数据集仓库 https://github.com/Galaxy-0/idea-crucible-datasets ，发布说明 `RELEASE_NOTES_v0.1.md`
 
 - 评估质量提升（第3–4天）
   - 提示词与结构保障：更强 JSON 约束、越界 redline 提示重试（限 1 次）；加入“引用规则 ID 与理由映射”的明确格式
@@ -47,8 +48,8 @@
   - 模板说明更新为 LLM 驱动（templates/report.md）
 
 - 下一步（明日优先）
-  - 生成 triage.jsonl 草稿（基于现有 verdicts 自动提议 decision/redlines/note，待你终审）
-  - 数据集统计脚本（决策分布、红线 Top-1/Top-3 命中率）
+  - 发布对外演示用的端到端示例（idea→verdict→report），中/英各 1（使用数据集中的代表样本）
+  - 为数据集新增一键脚本（可选）：批量评估 + 刷新数据卡 + 生成抽样报告
 
 ## 长期方向（可选）
 
