@@ -85,19 +85,22 @@ def render_report(idea_path: Path, verdict_path: Path, template_path: Path, out_
     with open(template_path, "r", encoding="utf-8") as f:
         tmpl = f.read()
 
+    def bullets(items: list[str]) -> str:
+        return ("\n- " + "\n- ".join(items)) if items else "暂无"
+
     ctx: dict[str, Any] = {
         "intent": idea_data.get("intent", ""),
         "user": idea_data.get("user", ""),
         "scenario": idea_data.get("scenario", ""),
         "triggers": idea_data.get("triggers", ""),
         "alts": idea_data.get("alts", ""),
-        "assumptions": "\n- " + "\n- ".join(idea_data.get("assumptions", []) or []),
-        "risks": "\n- " + "\n- ".join(idea_data.get("risks", []) or []),
+        "assumptions": bullets(idea_data.get("assumptions", []) or []),
+        "risks": bullets(idea_data.get("risks", []) or []),
         "decision": verdict.get("decision", ""),
         "conf_level": f"{verdict.get('conf_level', 0):.2f}",
-        "reasons": "\n- " + "\n- ".join(verdict.get("reasons", []) or []),
-        "redlines": "\n- " + "\n- ".join(verdict.get("redlines", []) or []),
-        "next_steps": "\n- " + "\n- ".join(verdict.get("next_steps", []) or []),
+        "reasons": bullets(verdict.get("reasons", []) or []),
+        "redlines": bullets(verdict.get("redlines", []) or []),
+        "next_steps": bullets(verdict.get("next_steps", []) or []),
     }
 
     content = tmpl.format(**ctx)

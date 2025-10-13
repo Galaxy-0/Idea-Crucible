@@ -65,11 +65,11 @@
 
 命令示例（简化版）
 - 录入：`uv run -m agent.cli intake "你的想法一句话"`
-- 评估：`uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.yaml`
+- 评估：`uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.local.yaml`
 - 报告：`uv run -m agent.cli report ideas/demo-idea.yaml`
 
 本地 LLM 连通性测试（CI 不跑）
-- 复制 `config/model.local.yaml.example` 为 `config/model.yaml` 并填写 Key
+- 复制 `config/model.local.yaml.example` 为 `config/model.local.yaml` 并填写 Key（本地文件，勿提交）
 - 运行：`uv run python scripts/local_llm_basic.py`
 
 ## 关键文件

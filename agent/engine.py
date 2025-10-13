@@ -55,6 +55,9 @@ def arbitrate_llm(idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str 
     conf = float(data.get("conf_level", 0.6) or 0.6)
     reasons = [str(x) for x in (data.get("reasons") or [])]
     redlines = [str(x) for x in (data.get("redlines") or [])]
+    # Align redlines with known rule IDs
+    allowed_ids = {r["id"] for r in rules_d if r.get("id")}
+    redlines = [rl for rl in redlines if rl in allowed_ids]
     next_steps = [str(x) for x in (data.get("next_steps") or [])]
 
     return Verdict(decision=decision, reasons=reasons, conf_level=conf, redlines=redlines, next_steps=next_steps)

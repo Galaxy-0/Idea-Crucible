@@ -66,11 +66,11 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
 
 Commands (simplified)
 - Intake: `uv run -m agent.cli intake "One-line idea"`
-- Evaluate: `uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.yaml`
+- Evaluate: `uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.local.yaml`
 - Report: `uv run -m agent.cli report ideas/demo-idea.yaml`
 
 Local-only LLM test (not in CI)
-- Copy `config/model.local.yaml.example` to `config/model.yaml` and fill your key
+- Copy `config/model.local.yaml.example` to `config/model.local.yaml` and fill your key (local file, do not commit)
 - Run: `uv run python scripts/local_llm_basic.py`
 
 Optional: None in minimal build (OpenAI client is included by default)
