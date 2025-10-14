@@ -39,11 +39,11 @@ def intake_entry() -> None:
 
 def evaluate_entry() -> None:
     if len(sys.argv) < 2:
-        print("Usage: evaluate <idea.yaml> [model-cfg]")
+        print("Usage: evaluate <idea.yaml>")
         sys.exit(2)
     idea = Path(sys.argv[1])
-    model_cfg = sys.argv[2] if len(sys.argv) > 2 else None
-    args = SimpleNamespace(idea=str(idea), model_cfg=model_cfg)
+    # model config is auto-resolved in agent.main (model.local.yaml > model.yaml)
+    args = SimpleNamespace(idea=str(idea), model_cfg=None)
     am.cmd_evaluate(args)
 
 
@@ -54,4 +54,3 @@ def report_entry() -> None:
     idea = Path(sys.argv[1])
     args = SimpleNamespace(idea=str(idea))
     am.cmd_report(args)
-

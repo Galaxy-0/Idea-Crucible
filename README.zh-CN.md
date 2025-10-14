@@ -65,14 +65,14 @@
 
 命令示例（简化版）
 - 录入：`uv run -m agent.cli intake "你的想法一句话"`
-- 评估：`uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.local.yaml`
+- 评估：`uv run -m agent.cli evaluate ideas/demo-idea.yaml`（自动优先使用 `config/model.local.yaml`，否则回退 `config/model.yaml`）
 - 报告：`uv run -m agent.cli report ideas/demo-idea.yaml`
 
 短命令（安装后）
 - 执行一次安装（可编辑安装）：`uv sync`（或 `pip install -e .`）
 - 之后可以直接调用：
   - `uv run intake "一句话想法"`
-  - `uv run evaluate ideas/demo-idea.yaml config/model.local.yaml`
+  - `uv run evaluate ideas/demo-idea.yaml`（自动优先使用 `config/model.local.yaml`）
   - `uv run report ideas/demo-idea.yaml`
   说明：短命令通过 `pyproject.toml` 的 `project.scripts` 暴露，需先完成一次安装同步。
 

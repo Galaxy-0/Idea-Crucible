@@ -66,14 +66,14 @@ Each rule carries: condition, severity, rationale, sources, and outputs “deny/
 
 Commands (simplified)
 - Intake: `uv run -m agent.cli intake "One-line idea"`
-- Evaluate: `uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.local.yaml`
+- Evaluate: `uv run -m agent.cli evaluate ideas/demo-idea.yaml` (auto-prefer `config/model.local.yaml`, fallback to `config/model.yaml`)
 - Report: `uv run -m agent.cli report ideas/demo-idea.yaml`
 
 Short commands (after install)
 - Do an editable install once: `uv sync` (or `pip install -e .`)
 - Then you can run directly:
   - `uv run intake "one-line idea"`
-  - `uv run evaluate ideas/demo-idea.yaml config/model.local.yaml`
+  - `uv run evaluate ideas/demo-idea.yaml` (auto-prefer `config/model.local.yaml`)
   - `uv run report ideas/demo-idea.yaml`
   Note: these console scripts come from `project.scripts` and require the prior install.
 

@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG_DIR = ROOT / "config"
 RULES_DIR = CONFIG_DIR / "rules" / "core"
 MODEL_CFG_PATH = CONFIG_DIR / "model.yaml"
+MODEL_LOCAL_CFG_PATH = CONFIG_DIR / "model.local.yaml"
 TEMPLATES_DIR = ROOT / "templates"
 IDEAS_DIR = ROOT / "ideas"
 REPORTS_DIR = ROOT / "reports"
@@ -62,7 +63,13 @@ def cmd_evaluate(args: argparse.Namespace) -> None:
         idea = Idea(**(yaml.safe_load(f) or {}))
 
     rules = load_rules(str(RULES_DIR))
-    model_cfg = str(Path(args.model_cfg or MODEL_CFG_PATH))
+    # Resolve model config: prefer local override, then default
+    chosen_cfg = None
+    if getattr(args, "model_cfg", None):
+        chosen_cfg = Path(args.model_cfg)
+    else:
+        chosen_cfg = MODEL_LOCAL_CFG_PATH if MODEL_LOCAL_CFG_PATH.exists() else MODEL_CFG_PATH
+    model_cfg = str(Path(chosen_cfg))
     verdict = arbitrate_llm(idea, rules, model_cfg, mode="llm-only")
 
     slug = slugify(Path(args.idea).stem)
@@ -142,7 +149,8 @@ def build_parser() -> argparse.ArgumentParser:
     # evaluate
     s = sub.add_parser("evaluate", help="Evaluate an idea against redline rules (LLM)")
     s.add_argument("--idea", required=True, type=str, help="Path to idea YAML")
-    s.add_argument("--model-cfg", type=str, help="Path to LLM config (YAML)")
+    # model config is optional and hidden behind a flag; by default, we use config/model.local.yaml if present, else config/model.yaml
+    s.add_argument("--model-cfg", type=str, help=argparse.SUPPRESS)
     s.set_defaults(func=cmd_evaluate)
 
     # report
