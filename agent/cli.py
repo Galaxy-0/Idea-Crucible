@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+import argparse
 from types import SimpleNamespace
 
 import yaml
@@ -43,7 +44,7 @@ def evaluate_entry() -> None:
         sys.exit(2)
     idea = Path(sys.argv[1])
     # model config is auto-resolved in agent.main (model.local.yaml > model.yaml)
-    args = SimpleNamespace(idea=str(idea), model_cfg=None)
+    args = argparse.Namespace(idea=str(idea), model_cfg=None)
     am.cmd_evaluate(args)
 
 
@@ -52,5 +53,5 @@ def report_entry() -> None:
         print("Usage: report <idea.yaml>")
         sys.exit(2)
     idea = Path(sys.argv[1])
-    args = SimpleNamespace(idea=str(idea))
+    args = argparse.Namespace(idea=str(idea))
     am.cmd_report(args)

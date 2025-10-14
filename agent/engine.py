@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import glob
 import os
-from typing import List
+from typing import List, Any, cast
 
 import yaml
 
@@ -46,7 +46,7 @@ def arbitrate_llm(idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str 
     ]
 
     cfg = load_model_config(model_cfg_path)
-    allowed_ids = [r["id"] for r in rules_d if r.get("id")]
+    allowed_ids: List[str] = [str(r.get("id")) for r in rules_d if r.get("id")]
     data = llm_verdict_json(idea_d, rules_d, cfg, allowed_redline_ids=allowed_ids)
 
     # Parse and coerce

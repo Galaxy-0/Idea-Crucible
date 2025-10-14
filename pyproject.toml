@@ -11,6 +11,7 @@ dependencies = [
   "pydantic>=2.6",
   "PyYAML>=6.0",
   "openai>=1.40.0",
+  "types-PyYAML>=6.0.12.20240808",
 ]
 
 [project.scripts]

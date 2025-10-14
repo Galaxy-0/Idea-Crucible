@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Any
 
 import yaml
 
@@ -31,7 +31,7 @@ def evaluate_one(idea_path: Path, rules_dir: Path, model_cfg: Path) -> Path:
     return out_json
 
 
-def collect_stats(verdict_paths: List[Path]) -> Dict[str, Dict[str, float]]:
+def collect_stats(verdict_paths: List[Path]) -> Dict[str, Any]:
     decisions: Dict[str, int] = {}
     redline_counts: Dict[str, int] = {}
     total = 0
@@ -96,4 +96,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
