@@ -22,8 +22,8 @@
   - [x] 失败兜底：401/403/429 区分与退避重试、响应体记录（本地可诊断）；对 429 使用指数退避+抖动
 
 - 体验与 CLI（第4–5天）
-  - 短命令落地：提供安装后的 `intake/evaluate/report` 可执行（`pip install -e .` 或 `uv sync` 后生效）
-  - 批量工具：数据集批量评估/统计脚本（决策分布、红线 Top-1/Top-3 命中率）
+  - [x] 短命令落地：安装后可直接运行 `intake/evaluate/report`（见 README，需 `uv sync` 或 `pip install -e .`）
+  - [x] 批量工具：新增 `scripts/batch_evaluate.py`（批量评估 + 统计：决策分布、红线 Top-1/Top-3 命中率，输出 `reports/_stats.json`）
 
 - CI 最小化（第5–6天）
   - 仅跑：schema 校验、类型检查、格式检查（跳过需要密钥的测试）

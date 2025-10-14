@@ -68,6 +68,21 @@
 - 评估：`uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.local.yaml`
 - 报告：`uv run -m agent.cli report ideas/demo-idea.yaml`
 
+短命令（安装后）
+- 执行一次安装（可编辑安装）：`uv sync`（或 `pip install -e .`）
+- 之后可以直接调用：
+  - `uv run intake "一句话想法"`
+  - `uv run evaluate ideas/demo-idea.yaml config/model.local.yaml`
+  - `uv run report ideas/demo-idea.yaml`
+  说明：短命令通过 `pyproject.toml` 的 `project.scripts` 暴露，需先完成一次安装同步。
+
+批量评估与统计
+- 脚本位置：`scripts/batch_evaluate.py`
+- 用途：对一个目录下的想法进行批量评估，并可输出统计（决策分布、红线命中率 Top-1/Top-3）
+- 示例：
+  - `uv run python scripts/batch_evaluate.py --ideas-dir ideas --model-cfg config/model.local.yaml --stats`
+  - 远程数据集：`uv run python scripts/batch_evaluate.py --ideas-dir ../idea-crucible-datasets/ideas --model-cfg config/model.local.yaml --stats`
+
 本地 LLM 连通性测试（CI 不跑）
 - 复制 `config/model.local.yaml.example` 为 `config/model.local.yaml` 并填写 Key（本地文件，勿提交）
 - 运行：`uv run python scripts/local_llm_basic.py`

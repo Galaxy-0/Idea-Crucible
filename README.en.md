@@ -69,6 +69,21 @@ Commands (simplified)
 - Evaluate: `uv run -m agent.cli evaluate ideas/demo-idea.yaml config/model.local.yaml`
 - Report: `uv run -m agent.cli report ideas/demo-idea.yaml`
 
+Short commands (after install)
+- Do an editable install once: `uv sync` (or `pip install -e .`)
+- Then you can run directly:
+  - `uv run intake "one-line idea"`
+  - `uv run evaluate ideas/demo-idea.yaml config/model.local.yaml`
+  - `uv run report ideas/demo-idea.yaml`
+  Note: these console scripts come from `project.scripts` and require the prior install.
+
+Batch evaluation and stats
+- Script location: `scripts/batch_evaluate.py`
+- Purpose: batch-evaluate a directory of ideas and emit simple stats (decision distribution, redline Top-1/Top-3 hit rate)
+- Examples:
+  - `uv run python scripts/batch_evaluate.py --ideas-dir ideas --model-cfg config/model.local.yaml --stats`
+  - With dataset repo: `uv run python scripts/batch_evaluate.py --ideas-dir ../idea-crucible-datasets/ideas --model-cfg config/model.local.yaml --stats`
+
 Local-only LLM test (not in CI)
 - Copy `config/model.local.yaml.example` to `config/model.local.yaml` and fill your key (local file, do not commit)
 - Run: `uv run python scripts/local_llm_basic.py`
