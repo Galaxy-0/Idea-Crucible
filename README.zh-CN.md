@@ -87,6 +87,14 @@
 - 复制 `config/model.local.yaml.example` 为 `config/model.local.yaml` 并填写 Key（本地文件，勿提交）
 - 运行：`uv run python scripts/local_llm_basic.py`
 
+## CI（最小化）
+- 运行内容（不需要密钥，不访问外网）：
+  - Schema 校验：`tests/rules_schema.py`（验证 `config/rules/core/*.yaml` 与示例 `ideas/*.yaml` 的 Pydantic 合规性）
+  - 类型检查：`mypy`（宽松设置：`--ignore-missing-imports`）
+  - 格式检查：`ruff format --check`（不自动修复）
+- 规则变更守护：任意 push/PR 都会自动跑上述 Schema 校验，防止无效规则文件进入主分支。
+- 在线 LLM 相关测试（需要密钥）默认不在 CI 中执行，仅建议本地运行。
+
 ## 关键文件
 - `config/rules/core/`：10 条红线（YAML）
 - `templates/report.md`：一页报告模板

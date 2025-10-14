@@ -88,6 +88,14 @@ Local-only LLM test (not in CI)
 - Copy `config/model.local.yaml.example` to `config/model.local.yaml` and fill your key (local file, do not commit)
 - Run: `uv run python scripts/local_llm_basic.py`
 
+## CI (minimal)
+- What runs (no secrets, no network):
+  - Schema check: `tests/rules_schema.py` (Pydantic validation for `config/rules/core/*.yaml` and example `ideas/*.yaml`)
+  - Type check: `mypy` (lenient: `--ignore-missing-imports`)
+  - Format check: `ruff format --check` (no auto-fix)
+- Rules guard: every push/PR triggers the schema check to block invalid rule files from merging.
+- Online LLM tests (requiring keys) are intentionally excluded from CI and should be run locally.
+
 Optional: None in minimal build (OpenAI client is included by default)
 
 ## Files of Interest
