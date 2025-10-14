@@ -26,8 +26,8 @@
   - [x] 批量工具：新增 `scripts/batch_evaluate.py`（批量评估 + 统计：决策分布、红线 Top-1/Top-3 命中率，输出 `reports/_stats.json`）
 
 - CI 最小化（第5–6天）
-  - 仅跑：schema 校验、类型检查、格式检查（跳过需要密钥的测试）
-  - 规则变更守护：新增/修改规则时自动做 Pydantic 校验
+  - [x] 仅跑：schema 校验、类型检查、格式检查（跳过需要密钥的测试）
+  - [x] 规则变更守护：所有 PR/Push 均执行 `tests/rules_schema.py`（Pydantic 校验规则与示例 Idea）
 
 - 演示与发布（第7天）
   - 准备 1–2 个端到端示例（idea→verdict→报告），中/英各一

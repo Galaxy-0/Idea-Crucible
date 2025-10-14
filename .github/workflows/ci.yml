@@ -1,34 +1,40 @@
-name: CI
+name: CI (minimal)
 
 on:
   push:
-    branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]
 
 jobs:
-  test:
+  build-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        uses: astral-sh/setup-uv@v3
 
-      - name: Install core dependencies (no extras)
+      - name: Sync project deps
         run: |
           uv venv -p 3.11
-          uv pip install -p .venv/bin/python -r requirements.txt
+          uv sync
 
-      - name: Run schema and smoke tests (no LLM calls)
+      - name: Schema check (rules + demo idea)
         run: |
-          .venv/bin/python tests/rules_schema.py
-          .venv/bin/python tests/smoke.py
+          uv run python tests/rules_schema.py
+
+      - name: Type check (mypy, minimal)
+        run: |
+          uvx mypy --version
+          uvx mypy --python-version 3.11 --ignore-missing-imports --follow-imports=silent agent scripts tests
+
+      - name: Format check (ruff formatter)
+        run: |
+          uvx ruff --version
+          uvx ruff format --check .
+
