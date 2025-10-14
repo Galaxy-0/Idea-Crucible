@@ -1,0 +1,8 @@
+intent: 一句话 想法
+user: early adopters
+scenario: initial use case
+triggers: pain/need trigger
+alts: status quo / competitors
+assumptions:
+- 一句话 想法
+risks: []

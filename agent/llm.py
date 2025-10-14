@@ -22,6 +22,8 @@ class LLMConfig:
         self.max_tokens = int(cfg.get("max_tokens", 800))
         self.timeout_s = int(cfg.get("timeout_s", 30))
         self.retries = int(cfg.get("retries", 2))
+        # backoff base seconds for 429 handling
+        self.backoff_s = float(cfg.get("backoff_s", 0.8))
         self.language = cfg.get("language", "auto")
 
 
@@ -59,6 +61,7 @@ class OpenAIClient:
 
     def complete_json(self, system: str, user: str) -> str:
         # Use JSON response format when available
+        import random
         for attempt in range(self._cfg.retries + 1):
             try:
                 resp = self._client.chat.completions.create(
@@ -73,13 +76,35 @@ class OpenAIClient:
                 )
                 return resp.choices[0].message.content or "{}"
             except Exception as e:
-                # On auth or 4xx errors, try raw HTTPX fallback once
+                status = getattr(e, "status_code", None)
+                text = str(e)
+                # Normalize status code from message if missing
+                if status is None:
+                    if " 401" in text or "code: 401" in text:
+                        status = 401
+                    elif " 403" in text or "code: 403" in text:
+                        status = 403
+                    elif " 429" in text or "code: 429" in text or "Rate limit" in text:
+                        status = 429
+
+                # Handle specific classes of errors
+                if status == 401:
+                    raise RuntimeError("401 Unauthorized: missing/invalid API key. Check api_key or headers in config/model.local.yaml.") from e
+                if status == 403:
+                    raise RuntimeError("403 Forbidden: key lacks access or headers missing. For OpenRouter, set HTTP-Referer and X-Title in config headers.") from e
+                if status == 429:
+                    # Exponential backoff + jitter
+                    backoff = (self._cfg.backoff_s * (2 ** attempt)) * (1.0 + random.random() * 0.25)
+                    time.sleep(backoff)
+                    continue
+
+                # Other errors: last attempt uses HTTPX for more diagnostics
                 if attempt == self._cfg.retries:
                     try:
                         return self._complete_json_httpx(system, user)
                     except Exception:
                         raise
-                time.sleep(0.5 * (attempt + 1))
+                time.sleep(self._cfg.backoff_s * (attempt + 1))
         return "{}"
 
     def _complete_json_httpx(self, system: str, user: str) -> str:
@@ -137,13 +162,19 @@ def strip_code_fences(text: str) -> str:
     return t.strip()
 
 
-def llm_verdict_json(idea: Dict[str, Any], rules: List[Dict[str, Any]], cfg: LLMConfig) -> Dict[str, Any]:
+def llm_verdict_json(
+    idea: Dict[str, Any],
+    rules: List[Dict[str, Any]],
+    cfg: LLMConfig,
+    allowed_redline_ids: Optional[List[str]] = None,
+    correction_note: Optional[str] = None,
+) -> Dict[str, Any]:
     client = get_client(cfg)
 
     system = (
         "You are a rigorous startup idea evaluator. Use the provided redline rules as the primary logic. "
-        "Return only a strict JSON object with keys: decision (deny|caution|go), conf_level (0-1), "
-        "reasons (array of short strings), redlines (array of rule ids), next_steps (array)."
+        "Return ONLY a strict JSON object (no code fences, no commentary). Keys: decision (deny|caution|go), conf_level (0-1), "
+        "reasons (array of short strings), redlines (array of rule ids), next_steps (array), reasons_map (array of objects with rule_id and reason)."
     )
 
     rubric = build_rubric(rules)
@@ -151,13 +182,20 @@ def llm_verdict_json(idea: Dict[str, Any], rules: List[Dict[str, Any]], cfg: LLM
     lang_directive = ""
     if language_hint and language_hint.lower() != "auto":
         lang_directive = f"Respond strictly in {language_hint}."
+    allowed = allowed_redline_ids or []
+    allow_line = (
+        ("Allowed redline IDs (must be a subset): " + ", ".join(allowed) + "\n") if allowed else ""
+    )
+    correction_line = (correction_note + "\n") if correction_note else ""
     user = (
         f"Language: {language_hint}. {lang_directive}\n"
-        "Evaluate this Idea against Redlines. Be conservative.\n\n"
+        f"{correction_line}Evaluate this Idea against Redlines. Be conservative.\n\n"
         f"Idea:\n{json.dumps(idea, ensure_ascii=False, indent=2)}\n\n"
         f"Redlines:\n{rubric}\n\n"
-        "Output JSON schema:\n"
-        "{\n  \"decision\": \"deny|caution|go\",\n  \"conf_level\": 0.0,\n  \"reasons\": [\"...\"],\n  \"redlines\": [\"RL-001\"],\n  \"next_steps\": [\"...\"]\n}"
+        f"{allow_line}"
+        "Output JSON schema (single JSON object, no extra text):\n"
+        "{\n  \"decision\": \"deny|caution|go\",\n  \"conf_level\": 0.0,\n  \"reasons\": [\"...\"],\n  \"redlines\": [\"RL-001\"],\n  \"next_steps\": [\"...\"],\n  \"reasons_map\": [{\"rule_id\": \"RL-001\", \"reason\": \"...\"}]\n}"
+        "\nRules: redlines MUST only contain IDs from Allowed list when provided; keep conf_level in [0,1] rounded to 2 decimals."
     )
 
     raw = client.complete_json(system, user)
