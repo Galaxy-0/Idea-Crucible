@@ -33,7 +33,9 @@ def main() -> None:
     print(f"[info] api_key={masked}")
 
     if not api_key or len(api_key) < 16:
-        print("[skip] LLM api_key not configured or too short; edit config/model.local.yaml or config/model.yaml")
+        print(
+            "[skip] LLM api_key not configured or too short; edit config/model.local.yaml or config/model.yaml"
+        )
         return
 
     idea_path = ROOT / "ideas" / "demo-idea.yaml"

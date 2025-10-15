@@ -19,7 +19,9 @@ def load_rules(rules_dir: str) -> List[Rule]:
     return rules
 
 
-def arbitrate_llm(idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str = "llm-only") -> Verdict:
+def arbitrate_llm(
+    idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str = "llm-only"
+) -> Verdict:
     # Prepare plain dicts for LLM
     idea_d = {
         "intent": idea.intent,
@@ -66,7 +68,11 @@ def arbitrate_llm(idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str 
     reasons_map = data.get("reasons_map") or []
     if isinstance(reasons_map, list) and not reasons:
         try:
-            reasons = [str(item.get("reason")) for item in reasons_map if isinstance(item, dict) and item.get("reason")]
+            reasons = [
+                str(item.get("reason"))
+                for item in reasons_map
+                if isinstance(item, dict) and item.get("reason")
+            ]
         except Exception:
             pass
 
@@ -74,7 +80,11 @@ def arbitrate_llm(idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str 
     # If redlines empty but reasons_map present, derive from it
     if not redlines and isinstance(reasons_map, list):
         try:
-            redlines = [str(item.get("rule_id")) for item in reasons_map if isinstance(item, dict) and item.get("rule_id")]
+            redlines = [
+                str(item.get("rule_id"))
+                for item in reasons_map
+                if isinstance(item, dict) and item.get("rule_id")
+            ]
         except Exception:
             pass
 
@@ -83,10 +93,13 @@ def arbitrate_llm(idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str 
     invalid = [rl for rl in redlines if rl not in allowed_set]
     if invalid:
         note = (
-            "Some redline IDs were invalid: " + ", ".join(sorted(set(invalid))) + 
-            ". Only use IDs from the allowed list and update reasons_map accordingly."
+            "Some redline IDs were invalid: "
+            + ", ".join(sorted(set(invalid)))
+            + ". Only use IDs from the allowed list and update reasons_map accordingly."
         )
-        data = llm_verdict_json(idea_d, rules_d, cfg, allowed_redline_ids=allowed_ids, correction_note=note)
+        data = llm_verdict_json(
+            idea_d, rules_d, cfg, allowed_redline_ids=allowed_ids, correction_note=note
+        )
         # Re-parse with the same normalization
         decision = str(data.get("decision", decision)).lower()
         if decision not in {"deny", "caution", "go"}:
@@ -102,11 +115,21 @@ def arbitrate_llm(idea: Idea, rules: List[Rule], model_cfg_path: str, mode: str 
         redlines = [str(x) for x in (data.get("redlines") or [])]
         if not redlines and isinstance(reasons_map, list):
             try:
-                redlines = [str(item.get("rule_id")) for item in reasons_map if isinstance(item, dict) and item.get("rule_id")]
+                redlines = [
+                    str(item.get("rule_id"))
+                    for item in reasons_map
+                    if isinstance(item, dict) and item.get("rule_id")
+                ]
             except Exception:
                 pass
 
     redlines = [rl for rl in redlines if rl in allowed_set]
     next_steps = [str(x) for x in (data.get("next_steps") or [])]
 
-    return Verdict(decision=decision, reasons=reasons, conf_level=conf, redlines=redlines, next_steps=next_steps)
+    return Verdict(
+        decision=decision,
+        reasons=reasons,
+        conf_level=conf,
+        redlines=redlines,
+        next_steps=next_steps,
+    )

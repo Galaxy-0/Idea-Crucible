@@ -1,0 +1,7 @@
+intent: "Simple consumer app to deliver daily motivational quotes via SMS"
+user: "General consumers"
+scenario: "Users receive one motivational quote per day via SMS"
+triggers: "Users want daily micro-inspiration"
+alts: "push notifications, email newsletters"
+assumptions: []
+risks: []

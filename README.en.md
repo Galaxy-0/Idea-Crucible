@@ -120,3 +120,11 @@ Optional: None in minimal build (OpenAI client is included by default)
   - Outputs: `reports/一句话-想法.verdict.json`, `reports/一句话-想法.md`
 
 One-liner to regenerate both demos: `uv run python scripts/gen_examples.py`
+
+## One-line Idea → Expansion → Verdict → Report
+- Goal: Enter a terse idea; the model expands key fields (user, scenario, triggers, assumptions, risks), then evaluates and renders a report.
+- Commands:
+  - `.venv/bin/python scripts/expand_wizard.py` (interactive prompt)
+  - Or pass the idea directly: `.venv/bin/python scripts/expand_wizard.py "your one-line idea"`
+- Outputs: `ideas/<slug>.yaml`, `reports/<slug>.verdict.json`, `reports/<slug>.md`
+- Note: requires `config/model.local.yaml` or `config/model.yaml` with a valid API key. If evaluation fails (e.g., no key), the script still attempts to render if a verdict exists.

@@ -115,3 +115,11 @@
   - 产物：`reports/一句话-想法.verdict.json`、`reports/一句话-想法.md`
 /
 一键生成上述两个示例：`uv run python scripts/gen_examples.py`
+
+## 一句话扩写 → 评估 → 报告（低交互）
+- 目的：你只需输入精简的一句话想法，模型会自动扩写核心要素（目标用户/核心场景/痛点/关键假设/已知风险），随后直接评估并生成报告。
+- 命令：
+  - `.venv/bin/python scripts/expand_wizard.py`（交互输入）
+  - 或直接携带想法：`.venv/bin/python scripts/expand_wizard.py 你的想法一句话`
+- 产物：自动写入 `ideas/<slug>.yaml`，并生成 `reports/<slug>.verdict.json`、`reports/<slug>.md`
+- 说明：需要配置 `config/model.local.yaml` 或 `config/model.yaml` 且具备可用的 API Key；若评估阶段失败，仍会尝试渲染报告（需已有 verdict）。

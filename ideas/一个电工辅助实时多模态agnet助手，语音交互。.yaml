@@ -1,0 +1,8 @@
+intent: 一个电工辅助实时多模态agnet助手，语音交互。
+user: early adopters
+scenario: initial use case
+triggers: pain/need trigger
+alts: status quo / competitors
+assumptions:
+- 一个电工辅助实时多模态agnet助手，语音交互。
+risks: []

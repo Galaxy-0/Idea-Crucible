@@ -34,7 +34,9 @@ def intake_entry() -> None:
         "risks": [],
     }
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(yaml.safe_dump(idea, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    out_path.write_text(
+        yaml.safe_dump(idea, allow_unicode=True, sort_keys=False), encoding="utf-8"
+    )
     print(str(out_path))
 
 

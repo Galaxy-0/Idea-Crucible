@@ -53,12 +53,20 @@ def cmd_intake(args: argparse.Namespace) -> None:
 
     out_path = IDEAS_DIR / (slug if slug.endswith(".yaml") else f"{slug}.yaml")
     with open(out_path, "w", encoding="utf-8") as f:
-        yaml.safe_dump(json.loads(json.dumps(idea, default=lambda o: o.__dict__)), f, allow_unicode=True, sort_keys=False)
+        yaml.safe_dump(
+            json.loads(json.dumps(idea, default=lambda o: o.__dict__)),
+            f,
+            allow_unicode=True,
+            sort_keys=False,
+        )
     print(str(out_path))
 
 
 def cmd_evaluate(args: argparse.Namespace) -> None:
     ensure_dirs()
+    # Optional language override
+    if getattr(args, "lang", None):
+        os.environ["IC_LANG"] = args.lang
     with open(args.idea, "r", encoding="utf-8") as f:
         idea = Idea(**(yaml.safe_load(f) or {}))
 
@@ -68,7 +76,9 @@ def cmd_evaluate(args: argparse.Namespace) -> None:
     if getattr(args, "model_cfg", None):
         chosen_cfg = Path(args.model_cfg)
     else:
-        chosen_cfg = MODEL_LOCAL_CFG_PATH if MODEL_LOCAL_CFG_PATH.exists() else MODEL_CFG_PATH
+        chosen_cfg = (
+            MODEL_LOCAL_CFG_PATH if MODEL_LOCAL_CFG_PATH.exists() else MODEL_CFG_PATH
+        )
     model_cfg = str(Path(chosen_cfg))
     verdict = arbitrate_llm(idea, rules, model_cfg, mode="llm-only")
 
@@ -84,7 +94,9 @@ def cmd_evaluate(args: argparse.Namespace) -> None:
     print(str(out_json))
 
 
-def render_report(idea_path: Path, verdict_path: Path, template_path: Path, out_path: Path) -> None:
+def render_report(
+    idea_path: Path, verdict_path: Path, template_path: Path, out_path: Path
+) -> None:
     with open(idea_path, "r", encoding="utf-8") as f:
         idea_data = yaml.safe_load(f) or {}
     with open(verdict_path, "r", encoding="utf-8") as f:
@@ -117,20 +129,33 @@ def render_report(idea_path: Path, verdict_path: Path, template_path: Path, out_
 
 def cmd_report(args: argparse.Namespace) -> None:
     ensure_dirs()
+    # Optional language override
+    if getattr(args, "lang", None):
+        os.environ["IC_LANG"] = args.lang
     idea_path = Path(args.idea)
     slug = slugify(idea_path.stem)
     verdict_path = REPORTS_DIR / f"{slug}.verdict.json"
-    template_path = TEMPLATES_DIR / "report.md"
+    # Template selection by language
+    lang = os.environ.get("IC_LANG", "").lower()
+    if lang.startswith("en") and (TEMPLATES_DIR / "report.en.md").exists():
+        template_path = TEMPLATES_DIR / "report.en.md"
+    elif (lang.startswith("zh") or not lang) and (
+        TEMPLATES_DIR / "report.zh-CN.md"
+    ).exists():
+        template_path = TEMPLATES_DIR / "report.zh-CN.md"
+    else:
+        template_path = TEMPLATES_DIR / "report.md"
     out_path = REPORTS_DIR / f"{slug}.md"
     render_report(idea_path, verdict_path, template_path, out_path)
     print(str(out_path))
-
 
     # no benchmark functionality in minimal build
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="idea-crucible", description="Redline-first idea evaluation CLI")
+    p = argparse.ArgumentParser(
+        prog="idea-crucible", description="Redline-first idea evaluation CLI"
+    )
     sub = p.add_subparsers(dest="command", required=True)
 
     # intake
@@ -151,11 +176,17 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--idea", required=True, type=str, help="Path to idea YAML")
     # model config is optional and hidden behind a flag; by default, we use config/model.local.yaml if present, else config/model.yaml
     s.add_argument("--model-cfg", type=str, help=argparse.SUPPRESS)
+    s.add_argument(
+        "--lang", type=str, help="Override report/LLM language, e.g. en or zh-CN"
+    )
     s.set_defaults(func=cmd_evaluate)
 
     # report
     s = sub.add_parser("report", help="Render one-page verdict report")
     s.add_argument("--idea", required=True, type=str, help="Path to idea YAML")
+    s.add_argument(
+        "--lang", type=str, help="Override report language, e.g. en or zh-CN"
+    )
     s.set_defaults(func=cmd_report)
 
     # no benchmark subcommand in minimal build

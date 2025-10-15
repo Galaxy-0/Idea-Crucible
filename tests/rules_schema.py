@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT))
 
 def assert_rule_files() -> None:
     from agent.schemas import Rule
+
     rules_dir = ROOT / "config" / "rules" / "core"
     files = sorted(glob.glob(str(rules_dir / "*.yaml")))
     assert files, "No rule files found"
@@ -22,6 +23,7 @@ def assert_rule_files() -> None:
 
 def assert_idea_file() -> None:
     from agent.schemas import Idea
+
     idea_path = ROOT / "ideas" / "demo-idea.yaml"
     data = yaml.safe_load(idea_path.read_text(encoding="utf-8")) or {}
     Idea(**data)

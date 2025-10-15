@@ -24,7 +24,8 @@ class LLMConfig:
         self.retries = int(cfg.get("retries", 2))
         # backoff base seconds for 429 handling
         self.backoff_s = float(cfg.get("backoff_s", 0.8))
-        self.language = cfg.get("language", "auto")
+        # Language selection: config default, but allow env override via IC_LANG
+        self.language = os.environ.get("IC_LANG", cfg.get("language", "auto"))
 
 
 def load_model_config(path: str) -> LLMConfig:
@@ -38,14 +39,18 @@ class OpenAIClient:
         try:
             from openai import OpenAI  # type: ignore
         except Exception as e:
-            raise RuntimeError("openai package not installed. Add it to requirements and pip install.") from e
+            raise RuntimeError(
+                "openai package not installed. Add it to requirements and pip install."
+            ) from e
 
         # Source credentials and base URL from model.yaml
         api_key = cfg.api_key
         if not api_key and cfg.api_key_env:
             api_key = os.environ.get(cfg.api_key_env)
         if not api_key:
-            raise RuntimeError("Missing API key. Set `api_key` in config/model.yaml (preferred), or define `api_key_env` and export it in your shell.")
+            raise RuntimeError(
+                "Missing API key. Set `api_key` in config/model.yaml (preferred), or define `api_key_env` and export it in your shell."
+            )
 
         # Build client with explicit Authorization header (for OpenRouter compatibility)
         headers: Dict[str, str] = {}
@@ -62,6 +67,7 @@ class OpenAIClient:
     def complete_json(self, system: str, user: str) -> str:
         # Use JSON response format when available
         import random
+
         for attempt in range(self._cfg.retries + 1):
             try:
                 resp = self._client.chat.completions.create(
@@ -89,12 +95,18 @@ class OpenAIClient:
 
                 # Handle specific classes of errors
                 if status == 401:
-                    raise RuntimeError("401 Unauthorized: missing/invalid API key. Check api_key or headers in config/model.local.yaml.") from e
+                    raise RuntimeError(
+                        "401 Unauthorized: missing/invalid API key. Check api_key or headers in config/model.local.yaml."
+                    ) from e
                 if status == 403:
-                    raise RuntimeError("403 Forbidden: key lacks access or headers missing. For OpenRouter, set HTTP-Referer and X-Title in config headers.") from e
+                    raise RuntimeError(
+                        "403 Forbidden: key lacks access or headers missing. For OpenRouter, set HTTP-Referer and X-Title in config headers."
+                    ) from e
                 if status == 429:
                     # Exponential backoff + jitter
-                    backoff = (self._cfg.backoff_s * (2 ** attempt)) * (1.0 + random.random() * 0.25)
+                    backoff = (self._cfg.backoff_s * (2**attempt)) * (
+                        1.0 + random.random() * 0.25
+                    )
                     time.sleep(backoff)
                     continue
 
@@ -109,8 +121,14 @@ class OpenAIClient:
 
     def _complete_json_httpx(self, system: str, user: str) -> str:
         import httpx
-        url = (self._cfg.base_url or "https://api.openai.com/v1").rstrip("/") + "/chat/completions"
-        headers = {"Authorization": f"Bearer {self._cfg.api_key}", "Content-Type": "application/json"}
+
+        url = (self._cfg.base_url or "https://api.openai.com/v1").rstrip(
+            "/"
+        ) + "/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {self._cfg.api_key}",
+            "Content-Type": "application/json",
+        }
         headers.update(getattr(self._cfg, "headers", {}) or {})
         payload = {
             "model": self._cfg.model,
@@ -144,9 +162,9 @@ def build_rubric(rules: List[Dict[str, Any]]) -> str:
         lines.append(
             " - ".join(
                 [
-                    f"{r.get('id','')} [{r.get('severity','')}:{r.get('decision','')}]",
+                    f"{r.get('id', '')} [{r.get('severity', '')}:{r.get('decision', '')}]",
                     r.get("condition", ""),
-                    f"rationale: {r.get('rationale','')}",
+                    f"rationale: {r.get('rationale', '')}",
                 ]
             )
         )
@@ -184,7 +202,9 @@ def llm_verdict_json(
         lang_directive = f"Respond strictly in {language_hint}."
     allowed = allowed_redline_ids or []
     allow_line = (
-        ("Allowed redline IDs (must be a subset): " + ", ".join(allowed) + "\n") if allowed else ""
+        ("Allowed redline IDs (must be a subset): " + ", ".join(allowed) + "\n")
+        if allowed
+        else ""
     )
     correction_line = (correction_note + "\n") if correction_note else ""
     user = (
@@ -194,7 +214,7 @@ def llm_verdict_json(
         f"Redlines:\n{rubric}\n\n"
         f"{allow_line}"
         "Output JSON schema (single JSON object, no extra text):\n"
-        "{\n  \"decision\": \"deny|caution|go\",\n  \"conf_level\": 0.0,\n  \"reasons\": [\"...\"],\n  \"redlines\": [\"RL-001\"],\n  \"next_steps\": [\"...\"],\n  \"reasons_map\": [{\"rule_id\": \"RL-001\", \"reason\": \"...\"}]\n}"
+        '{\n  "decision": "deny|caution|go",\n  "conf_level": 0.0,\n  "reasons": ["..."],\n  "redlines": ["RL-001"],\n  "next_steps": ["..."],\n  "reasons_map": [{"rule_id": "RL-001", "reason": "..."}]\n}'
         "\nRules: redlines MUST only contain IDs from Allowed list when provided; keep conf_level in [0,1] rounded to 2 decimals."
     )
 

@@ -30,8 +30,16 @@
   - [x] 规则变更守护：所有 PR/Push 均执行 `tests/rules_schema.py`（Pydantic 校验规则与示例 Idea）
 
 - 演示与发布（第7天）
-  - 准备 1–2 个端到端示例（idea→verdict→报告），中/英各一
-  - 数据集 v0.1 冻结：`ideas/`、`verdicts/`、`triage.jsonl`、`DATA_CARD.md` 完整
+  - [x] 准备 1–2 个端到端示例（idea→verdict→报告），中/英各一
+    - 样例：`ideas/demo-idea.yaml`、`ideas/一句话-想法.yaml`
+    - 一键生成：`uv run python scripts/gen_examples.py`
+    - 产物：`reports/demo-idea.{verdict.json,md}`、`reports/一句话-想法.{verdict.json,md}`
+    - 文档：README（中/英）已新增“端到端示例/End-to-End Demo”段落与命令
+  - [x] 数据集 v0.1 冻结：`ideas/`、`verdicts/`、`triage.jsonl`、`DATA_CARD.md` 完整
+    - 路径：`/Users/galaxy/Project/Startup/idea-crucible-datasets`
+    - 一致性：`triage.jsonl` 43 条，`verdicts/` 43 个，均能在 `ideas/` 中找到对应条目
+    - 数据卡：`DATA_CARD.md` 含来源/许可/规则版本/分布统计/时间戳
+    - 已完成提交与标签：`git commit -m "Freeze dataset v0.1"`，`git tag v0.1`
 
 ## 本周交付物
 
@@ -46,10 +54,14 @@
   - 红线 ID 对齐（agent/engine.py）
   - 文档示例统一（README.zh-CN.md / README.en.md）
   - 模板说明更新为 LLM 驱动（templates/report.md）
+  - 端到端示例脚本与文档：`scripts/gen_examples.py`，README 中/英增加示例段落
+  - 数据集同步辅助脚本：`scripts/sync_verdicts.py`
+  - 数据集 v0.1 冻结核查+提交+打标签（本地 tag：v0.1）
 
 - 下一步（明日优先）
-  - 发布对外演示用的端到端示例（idea→verdict→report），中/英各 1（使用数据集中的代表样本）
-  - 为数据集新增一键脚本（可选）：批量评估 + 刷新数据卡 + 生成抽样报告
+  - （可选）推送数据集标签到远端：`git push origin v0.1`
+  - （可选）为演示生成静态页或导出 PDF（基于 `reports/*.md`）
+  - （可选）数据集一键流水线：整合“批量评估 + 同步判定 + 刷新数据卡”到单脚本
 
 ## 长期方向（可选）
 
@@ -65,6 +77,8 @@
 - 生成报告：`uv run -m agent.main report --idea ideas/<slug>.yaml`
 - 数据集批量评估（示例）：
   - 对 `idea-crucible-datasets/ideas/rfs-*.yaml` 批量跑，复制 `reports/*.verdict.json` 至数据集 `verdicts/`（当前已全量评估 38/38）
+  - 一键生成演示：`uv run python scripts/gen_examples.py`
+  - 同步判定至数据集：`uv run python scripts/sync_verdicts.py --dst ../idea-crucible-datasets/verdicts`
 
 ---
 

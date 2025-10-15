@@ -59,4 +59,3 @@ class Verdict(BaseModel):
     conf_level: float = 0.5
     redlines: List[str] = []
     next_steps: List[str] = []
-

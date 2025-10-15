@@ -1,8 +1,8 @@
-intent: 基于AI的个性化营养补剂订阅服务
+intent: 一个大模型意识形态倾向benchmark
 user: early adopters
 scenario: initial use case
 triggers: pain/need trigger
 alts: status quo / competitors
 assumptions:
-- 基于AI的个性化营养补剂订阅服务
+- 一个大模型意识形态倾向benchmark
 risks: []
