@@ -109,3 +109,14 @@ Optional: None in minimal build (OpenAI client is included by default)
 - Configure provider/model in `config/model.yaml` (default: OpenAI gpt-4o-mini, env `OPENAI_API_KEY`).
 - Modes: `llm-only` (default)
 - Prompt: the client builds a JSON-format request directly.
+## End-to-End Demo
+- English example: `ideas/demo-idea.yaml`
+  - Evaluate: `uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml`
+  - Report: `uv run python -m agent.main report --idea ideas/demo-idea.yaml`
+  - Outputs: `reports/demo-idea.verdict.json`, `reports/demo-idea.md`
+- Chinese example: `ideas/一句话-想法.yaml`
+  - Evaluate: `uv run python -m agent.main evaluate --idea ideas/一句话-想法.yaml`
+  - Report: `uv run python -m agent.main report --idea ideas/一句话-想法.yaml`
+  - Outputs: `reports/一句话-想法.verdict.json`, `reports/一句话-想法.md`
+
+One-liner to regenerate both demos: `uv run python scripts/gen_examples.py`

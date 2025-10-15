@@ -104,3 +104,14 @@
 - 模型配置：`config/model.yaml`（provider/model/base_url/api_key/temperature 等）。
 - 评估模式：`llm-only`（默认）。
 - 提示：客户端直接构造 JSON 输出约束的提示。
+## 端到端示例
+- 英文样例：`ideas/demo-idea.yaml`
+  - 评估：`uv run python -m agent.main evaluate --idea ideas/demo-idea.yaml`
+  - 报告：`uv run python -m agent.main report --idea ideas/demo-idea.yaml`
+  - 产物：`reports/demo-idea.verdict.json`、`reports/demo-idea.md`
+- 中文样例：`ideas/一句话-想法.yaml`
+  - 评估：`uv run python -m agent.main evaluate --idea ideas/一句话-想法.yaml`
+  - 报告：`uv run python -m agent.main report --idea ideas/一句话-想法.yaml`
+  - 产物：`reports/一句话-想法.verdict.json`、`reports/一句话-想法.md`
+/
+一键生成上述两个示例：`uv run python scripts/gen_examples.py`
